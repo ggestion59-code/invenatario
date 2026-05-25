@@ -46,7 +46,7 @@
   --success:#10b981;--success2:#ecfdf5;--success3:#a7f3d0;
   --warn:#f59e0b;--warn2:#fffbeb;--warn3:#fde68a;
   --out:#7c3aed;--out2:#f5f3ff;--out3:#ddd6fe;--out4:#c4b5fd;
-  --bg:#f8fafc;--card:#fff;--border:#e2e8f0;--border2:#cbd5e1;
+  --bg:#f1f5f9;--card:#fff;--border:#e2e8f0;--border2:#cbd5e1;
   --txt:#0f172a;--txt2:#475569;--txt3:#94a3b8;
   --sh:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
   --sh-md:0 4px 6px -1px rgba(0,0,0,.07),0 2px 4px -1px rgba(0,0,0,.04);
@@ -89,7 +89,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 }
 
 /* ── MAIN ── */
-.main{flex:1;display:block;min-width:0;overflow-y:auto;overflow-x:hidden}
+.main{flex:1;display:block;min-width:0;overflow-y:auto;overflow-x:hidden;background:var(--bg)}
 
 /* ── TOPBAR ── */
 .topbar{background:var(--dark);padding:.8rem 1rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid rgba(255,255,255,.06)}
@@ -108,7 +108,7 @@ body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--t
 @media(min-width:1024px){.content{padding:1.5rem 2rem}}
 
 /* ── SCREENS ── */
-.screen{display:none;animation:fadeIn .18s ease}
+.screen{display:none;animation:fadeIn .18s ease;background:var(--bg);min-height:calc(100vh - 56px)}
 .screen.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 
@@ -957,11 +957,11 @@ window.toggleModule = function(id){
     </div>
 
     <div class="sb-module">
-      <div class="sb-module-hdr open" id="mob-mod-conteo-hdr" onclick="toggleModule('mob-mod-conteo')">
+      <div class="sb-module-hdr" id="mob-mod-conteo-hdr" onclick="toggleModule('mob-mod-conteo')">
         <span class="sb-module-icon"><i class="ti ti-checklist" style="font-size:14px"></i></span><span class="sb-module-label">Conteo / Auditoría</span><i class="ti ti-chevron-down sb-arrow"></i>
       </div>
-      <div class="sb-module-body open" id="mob-mod-conteo-body">
-        <div class="nav-item active" id="mob-s-conteo"       onclick="showScreen('conteo','bnav-conteo');closeMobDrawer()"><i class="ti ti-plus" style="font-size:12px;min-width:14px"></i>Conteo</div>
+      <div class="sb-module-body" id="mob-mod-conteo-body">
+        <div class="nav-item" id="mob-s-conteo"       onclick="showScreen('conteo','bnav-conteo');closeMobDrawer()"><i class="ti ti-plus" style="font-size:12px;min-width:14px"></i>Conteo</div>
         <div class="nav-item" id="mob-s-oos"                 onclick="showScreen('oos','bnav-oos');closeMobDrawer()"><i class="ti ti-alert-triangle" style="font-size:12px;min-width:14px"></i>Fuera de Stock</div>
         <div class="nav-item" id="mob-s-conteos"             onclick="showScreen('conteos','bnav-conteos');closeMobDrawer()"><i class="ti ti-list" style="font-size:12px;min-width:14px"></i>Resumen Conteos</div>
         <div class="nav-item" id="mob-s-conteo-real"         onclick="showScreen('conteo-real','bnav-conteo-real');closeMobDrawer()"><i class="ti ti-circle-check" style="font-size:12px;min-width:14px"></i>Conteo Realizado</div>
@@ -1400,13 +1400,13 @@ window.toggleModule = function(id){
 
     <!-- CONTEO / AUDITORÍA -->
     <div class="sb-module">
-      <div class="sb-module-hdr open" id="mod-conteo-hdr" onclick="toggleModule('mod-conteo')">
+      <div class="sb-module-hdr" id="mod-conteo-hdr" onclick="toggleModule('mod-conteo')">
         <span class="sb-module-icon"><i class="ti ti-checklist" style="font-size:14px"></i></span>
         <span class="sb-module-label">Conteo / Auditoría</span>
         <i class="ti ti-chevron-down sb-arrow"></i>
       </div>
-      <div class="sb-module-body open" id="mod-conteo-body">
-        <div class="nav-item active" id="s-conteo"       onclick="showScreen('conteo','s-conteo');closeMobDrawer()"><i class="ti ti-plus" style="font-size:12px;min-width:14px"></i>Conteo</div>
+      <div class="sb-module-body" id="mod-conteo-body">
+        <div class="nav-item" id="s-conteo"       onclick="showScreen('conteo','s-conteo');closeMobDrawer()"><i class="ti ti-plus" style="font-size:12px;min-width:14px"></i>Conteo</div>
         <div class="nav-item" id="s-oos"                 onclick="showScreen('oos','s-oos');closeMobDrawer()"><i class="ti ti-alert-triangle" style="font-size:12px;min-width:14px"></i>Fuera de Stock</div>
         <div class="nav-item" id="s-conteos"             onclick="showScreen('conteos','s-conteos');closeMobDrawer()"><i class="ti ti-list" style="font-size:12px;min-width:14px"></i>Resumen Conteos</div>
         <div class="nav-item" id="s-conteo-real"         onclick="showScreen('conteo-real','s-conteo-real');closeMobDrawer()"><i class="ti ti-circle-check" style="font-size:12px;min-width:14px"></i>Conteo Realizado</div>
@@ -3582,7 +3582,8 @@ window.toggleModule = function(id){
               <th style="padding:10px 14px;text-align:left;color:#b8cce4;font-size:9.5px;font-weight:700;text-transform:uppercase;white-space:nowrap">EMPRESA</th>
               <th style="padding:10px 14px;text-align:left;color:#b8cce4;font-size:9.5px;font-weight:700;text-transform:uppercase;white-space:nowrap">SEDE</th>
               <th style="padding:10px 14px;text-align:left;color:#b8cce4;font-size:9.5px;font-weight:700;text-transform:uppercase;white-space:nowrap">GUÍA</th>
-              <th style="padding:10px 14px;text-align:left;color:#b8cce4;font-size:9.5px;font-weight:700;text-transform:uppercase;white-space:nowrap">PRODUCTO</th>
+              <th style="padding:10px 14px;text-align:left;color:#b8cce4;font-size:9.5px;font-weight:700;text-transform:uppercase;white-space:nowrap">CÓD. PRODUCTO</th>
+              <th style="padding:10px 14px;text-align:left;color:#b8cce4;font-size:9.5px;font-weight:700;text-transform:uppercase;white-space:nowrap">DESCRIPCIÓN</th>
               <th style="padding:10px 14px;text-align:left;color:#b8cce4;font-size:9.5px;font-weight:700;text-transform:uppercase;white-space:nowrap">ALMACÉN</th>
               <th style="padding:10px 14px;text-align:center;color:#b8cce4;font-size:9.5px;font-weight:700;text-transform:uppercase;white-space:nowrap">CANTIDAD</th>
               <th style="padding:10px 14px;text-align:left;color:#b8cce4;font-size:9.5px;font-weight:700;text-transform:uppercase;white-space:nowrap">LOTE PROV.</th>
@@ -4012,6 +4013,25 @@ var ALMACEN_ID    = "";
 var ALMACEN_LABEL = "";
 var ALMACEN_FIS   = "";
 var PRODUCTOS    = [];
+
+  /* ── Helper global: busca descripción por código en catálogo ── */
+  window.getDescProd = function(codigo){
+    if(!codigo) return '';
+    var cod = String(codigo).trim().toUpperCase();
+    // Buscar en PRODUCTOS (catálogo principal)
+    var src = window.PRODUCTOS||[];
+    var p = src.find(function(x){
+      return String(x.CODIGO||x.codigo||'').trim().toUpperCase()===cod ||
+             String(x.ID||x.id||'').trim().toUpperCase()===cod;
+    });
+    if(p) return String(p.DESCRIPCION||p.descripcion||p.MATERIAL||p.material||'');
+    // Buscar en _PROD_CACHE si existe
+    var cache = window._PROD_CACHE||[];
+    var c = cache.find(function(x){
+      return String(x.codigo||x.CODIGO||'').trim().toUpperCase()===cod;
+    });
+    return c ? String(c.nombre||c.DESCRIPCION||'') : '';
+  };
 var SEL_PROD     = null;
 var prevConteo   = 0;
 var oosCount     = 0;
@@ -11317,22 +11337,18 @@ function closeMobDrawer(){
 
         var matBtn = '<button data-idcab="'+escH(idCab)+'" data-guia="'+escH(guia)+'" onclick="verMaterialesRecepcion(this.dataset.idcab,this.dataset.guia)" style="border:1px solid #059669;background:#f0fdf4;color:#059669;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:10px;font-weight:700">👁 Ver</button>';
 
-        // Pasar datos ya traducidos al botón Anular (nombres, no IDs)
-        var empMapL   = {'1':'AQU ANQA SAC','2':'AQU ANQA II SAC','3':'AQU ANQA SAC CAMPO','4':'AQU ANQA II SAC CAMPO'};
-        var sedeMapL  = {'99':'PACKING','30':'CAMPO'};
-        var empRawL   = String(cab.EMPRESA||'');
-        var sedeRawL  = String(cab.SEDE||'');
-        // Traducir ID→nombre; si ya viene como nombre, usar directo
-        var empNomBtn  = empMapL[empRawL]  || empRawL;
-        var sedeNomBtn = sedeMapL[sedeRawL] || sedeRawL;
-        var guiaNomBtn = String(cab['GRE REMITENTE']||cab['GRE-REMITENTE']||'');
-        var provNomBtn = String(cab['PROVEEDOR GEN.']||cab['PROVEEDOR']||'');
+        // Pasar ID crudo para empresa/sede (AppSheet Ref espera el ID, no el nombre)
+        // Y nombre para guia/prov (texto libre)
+        var empIdBtn   = String(cab.EMPRESA||'');   // "1","2","3","4"
+        var sedeIdBtn  = String(cab.SEDE||'');       // "99","30"
+        var guiaBtnVal = String(cab['GRE REMITENTE']||cab['GRE-REMITENTE']||'');
+        var provBtnVal = String(cab['PROVEEDOR GEN.']||cab['PROVEEDOR']||'');
         var anulBtn = esAnul
           ? '<span style="color:#dc2626;font-size:10px;font-weight:700">ANULADO</span>'
           : '<button data-idcab="'+escH(idCab)+'" data-guia="'+escH(guia)+
-            '" data-empresa="'+escH(empNomBtn)+
-            '" data-sede="'+escH(sedeNomBtn)+
-            '" data-prov="'+escH(provNomBtn)+
+            '" data-empresa="'+escH(empIdBtn)+
+            '" data-sede="'+escH(sedeIdBtn)+
+            '" data-prov="'+escH(provBtnVal)+
             '" onclick="recAnularRecepcion(this.dataset.idcab,this.dataset.guia,this.dataset.guia,this.dataset.empresa,this.dataset.sede,this.dataset.prov)" style="border:1px solid #fecaca;background:#fff5f5;color:#dc2626;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:10px;font-weight:700">✕ Anular</button>';
 
         tr.innerHTML =
@@ -11372,7 +11388,17 @@ function closeMobDrawer(){
     if(tbody) tbody.innerHTML = '<tr><td colspan="6" style="padding:20px;text-align:center;color:#6a8faf">Cargando materiales…</td></tr>';
 
     try {
-      var detData = await apiGet('Detalle_Recepcion');
+      var [detData, prodDataM] = await Promise.all([
+        apiGet('Detalle_Recepcion'),
+        (window.PRODUCTOS&&window.PRODUCTOS.length) ? Promise.resolve(window.PRODUCTOS) : apiGet('productos').catch(function(){ return []; })
+      ]);
+      // Mapa local código→descripción para el modal
+      var _prodMapM = {};
+      (prodDataM||[]).forEach(function(p){
+        var cod = String(p.CODIGO||p.codigo||'').trim();
+        if(cod) _prodMapM[cod] = String(p.DESCRIPCION||p.descripcion||p.MATERIAL||'');
+      });
+      function _getDescM(cod){ cod=String(cod||'').trim(); return _prodMapM[cod]||(window.getDescProd?window.getDescProd(cod):'')||''; }
       var items   = (detData||[]).filter(function(d){ return String(d.ID_Cab||'') === String(idCab); });
 
       if(sub) sub.textContent = 'Guía: '+(guia||idCab)+' · '+items.length+' producto(s)';
@@ -11388,13 +11414,8 @@ function closeMobDrawer(){
         tr.style.cssText = 'border-bottom:1px solid #f0f4f8;background:'+(i%2===0?'#fff':'#f9fafb');
         tr.innerHTML =
           '<td style="padding:8px 12px">'+
-            '<div style="font-weight:700;color:#1e3a5f;font-size:11.5px">'+escH(String(d.PRODUCTO||'—'))+'</div>'+
-            '<div style="font-size:10px;color:#6a8faf;margin-top:2px">'+(function(cod){
-              if(!cod||!window._PROD_CACHE) return '';
-              var p=_PROD_CACHE.find(function(x){ return x.codigo===cod; });
-              return p?escH(p.nombre):'';
-            })(String(d.PRODUCTO||''))+
-            '</div>'+
+            '<div style="font-family:monospace;font-size:10px;font-weight:700;color:#2563eb">'+escH(String(d.PRODUCTO||'—'))+'</div>'+
+            '<div style="font-size:11px;color:#1e293b;margin-top:3px;font-weight:500">'+escH(_getDescM(String(d.PRODUCTO||'')))+'</div>'+
           '</td>'+
           '<td style="padding:8px 12px;font-size:11px">'+escH(String(d.ALMACEN||'—'))+'</td>'+
           '<td style="padding:8px 12px;text-align:center;font-weight:700">'+escH(String(d.CANTIDAD||'0'))+'</td>'+
@@ -11449,7 +11470,9 @@ function closeMobDrawer(){
         // Try cab first, fallback to OBSERVACION field
         var empNom = String(a.EMPRESA||cab.EMPRESA||'—');
         if(empMap[empNom]) empNom = empMap[empNom];
-        var sede   = String(a.SEDE||({'99':'PACKING','30':'CAMPO'})[String(cab.SEDE||'')]||'—');
+        var _sedeRaw = String(a.SEDE||cab.SEDE||'—');
+        var _sedeMap = {'99':'PACKING','30':'CAMPO'};
+        var sede = _sedeMap[_sedeRaw] || _sedeRaw;
         var guia   = String(a['GRE-REMITENTE']||cab['GRE REMITENTE']||'—');
         var prov   = String(a.PROVEEDOR||cab['PROVEEDOR GEN.']||'—');
         var tr = document.createElement('tr');
@@ -11526,12 +11549,13 @@ function closeMobDrawer(){
         console.log('[ANUL] Detalles encontrados:', detData.length);
       } catch(e){ console.warn('[ANUL] No se pudieron leer detalles:', e.message); }
 
-      // PASO 2: Copiar detalles a Detalle_Anulaciones (mismas columnas que Detalle_Recepcion)
+      // PASO 2: Copiar detalles a Detalle_Anulaciones
+      // NOTA: ID_Det tiene UNIQUEID() en AppSheet → NO enviar, AppSheet lo genera
+      //       ID_Cab es Ref → enviar el string exacto del ID_Cab
       if(detData.length){
-        var detAnulRows = detData.map(function(d){
-          // Incluir ID_Det original + ID_Cab para trazabilidad
-          var row = {
-            'ID_Det':          String(d.ID_Det||d['ID_Det']||''),
+        for(var di=0; di<detData.length; di++){
+          var d = detData[di];
+          var rowAnulDet = {
             'ID_Cab':          idCab,
             'PRODUCTO':        String(d.PRODUCTO||''),
             'ALMACEN':         String(d.ALMACEN||''),
@@ -11543,34 +11567,18 @@ function closeMobDrawer(){
             'CONDICION':       String(d.CONDICION||''),
             'OBSER.':          String(d['OBSER.']||'')
           };
-          return row;
-        });
-        console.log('[ANUL P2] Detalle_Anulaciones payload:', JSON.stringify(detAnulRows).slice(0,400));
-        try {
-          var rDet = await fetch(BASE + '/Detalle_Anulaciones/Action', {
-            method: 'POST',
-            headers: {'ApplicationAccessKey': API_KEY, 'Content-Type': 'application/json'},
-            body: JSON.stringify({Action: 'Add', Rows: detAnulRows})
-          });
-          var tDet = await rDet.text().catch(function(){ return ''; });
-          console.log('[ANUL P2] Detalle_Anulaciones HTTP', rDet.status, tDet.slice(0,200));
-          if(!rDet.ok){
-            console.warn('[ANUL P2] ⚠ 400 completo:', tDet);
-            // Reintento sin ID_Det (puede ser key automática en Detalle_Anulaciones)
-            var detAnulRowsMin = detAnulRows.map(function(r){
-              var r2=Object.assign({},r); delete r2['ID_Det']; return r2;
-            });
-            console.log('[ANUL P2b] Reintento sin ID_Det:', JSON.stringify(detAnulRowsMin).slice(0,300));
-            var rDet2 = await fetch(BASE + '/Detalle_Anulaciones/Action', {
+          console.log('[ANUL P2] ítem '+(di+1)+':', JSON.stringify(rowAnulDet));
+          try {
+            var rDet = await fetch(BASE + '/Detalle_Anulaciones/Action', {
               method: 'POST',
               headers: {'ApplicationAccessKey': API_KEY, 'Content-Type': 'application/json'},
-              body: JSON.stringify({Action: 'Add', Rows: detAnulRowsMin})
+              body: JSON.stringify({Action: 'Add', Rows: [rowAnulDet]})
             });
-            var tDet2 = await rDet2.text().catch(function(){ return ''; });
-            console.log('[ANUL P2b] HTTP', rDet2.status, tDet2.slice(0,200));
-            if(!rDet2.ok) console.warn('[ANUL P2b] ⚠ también falló:', tDet2.slice(0,300));
-          }
-        } catch(eDet){ console.warn('[ANUL P2] excepción:', eDet.message); }
+            var tDet = await rDet.text().catch(function(){ return ''; });
+            console.log('[ANUL P2] ítem '+(di+1)+' HTTP', rDet.status, tDet.slice(0,200));
+            if(!rDet.ok) console.warn('[ANUL P2] ⚠ error:', tDet.slice(0,300));
+          } catch(eDet){ console.warn('[ANUL P2] excepción ítem '+(di+1)+':', eDet.message); }
+        }
       }
 
       // PASO 3: Eliminar de Detalle_Recepcion
@@ -11601,20 +11609,29 @@ function closeMobDrawer(){
       if(!r1.ok) console.warn('[ANUL P4] ⚠ 400 body:', t1.slice(0,400));
 
       // PASO 5: Insertar en Anulaciones_Recepcion
-      // cabInfo viene de params directos (nombres ya traducidos) o del fetch
+      // EMPRESA y SEDE: AppSheet Ref → guardar el ID numérico ("1","99")
+      // empParam viene del data-empresa del botón = ID crudo de AppSheet
       var empMapAn  = {'1':'AQU ANQA SAC','2':'AQU ANQA II SAC','3':'AQU ANQA SAC CAMPO','4':'AQU ANQA II SAC CAMPO'};
       var sedeMapAn = {'99':'PACKING','30':'CAMPO'};
+      // Mapa inverso: nombre→ID (por si AppSheet devuelve nombre en vez de ID)
+      var empInvAn  = {'AQU ANQA SAC':'1','AQU ANQA II SAC':'2','AQU ANQA SAC CAMPO':'3','AQU ANQA II SAC CAMPO':'4'};
+      var sedeInvAn = {'PACKING':'99','CAMPO':'30'};
       var empRawAn  = String(cabInfo.EMPRESA||'');
       var sedeRawAn = String(cabInfo.SEDE||'');
-      // Traducir ID→nombre si viene como ID, de lo contrario usar el valor directo
-      var empNomAn  = empMapAn[empRawAn]  || empRawAn;
-      var sedeNomAn = sedeMapAn[sedeRawAn] || sedeRawAn;
+      // Si AppSheet devolvió el nombre, convertir a ID
+      var empIdFinal  = empInvAn[empRawAn]  || (empMapAn[empRawAn]  ? empRawAn : empRawAn);
+      var sedeIdFinal = sedeInvAn[sedeRawAn] || (sedeMapAn[sedeRawAn] ? sedeRawAn : sedeRawAn);
+      // Nombre para mostrar en pantalla
+      var empNomAn  = empMapAn[empIdFinal]  || empRawAn;
+      var sedeNomAn = sedeMapAn[sedeIdFinal] || sedeRawAn;
       var guiaAn    = String(cabInfo['GRE REMITENTE']||cabInfo['GRE-REMITENTE']||guia||'');
       var provAn    = String(cabInfo['PROVEEDOR GEN.']||cabInfo['PROVEEDOR']||'');
-      console.log('[ANUL P5] empRaw='+empRawAn+' → empNom='+empNomAn+' | sedeRaw='+sedeRawAn+' → sedeNom='+sedeNomAn+' | guia='+guiaAn+' | prov='+provAn);
+      console.log('[ANUL P5] empRaw='+empRawAn+' empId='+empIdFinal+' empNom='+empNomAn+' | sedeRaw='+sedeRawAn+' sedeId='+sedeIdFinal+' | guia='+guiaAn+' | prov='+provAn);
       var idAnulRec = 'AR-'+Date.now()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
 
       // Variantes del payload — de completo a mínimo, probando nombres alternativos
+      // Anulaciones_Recepcion: EMPRESA y SEDE son Ref → enviar ID numérico
+      // GRE-REMITENTE y PROVEEDOR son texto libre
       var baseAnul = {
         'ID_Cab':                idCab,
         'MOTIVO':                motivo,
@@ -11623,8 +11640,8 @@ function closeMobDrawer(){
         'USUARIO-ANULACION':     usuAn,
         'DISPOSITIVO-ANULACION': dispAn,
         'OBSERVACION':           'Anulado por '+usuAn+' el '+fechaAn+' a las '+horaAn,
-        'SEDE':                  sedeNomAn,
-        'EMPRESA':               empNomAn,
+        'SEDE':                  sedeIdFinal,
+        'EMPRESA':               empIdFinal,
         'GRE-REMITENTE':         guiaAn,
         'PROVEEDOR':             provAn
       };
@@ -11693,46 +11710,73 @@ function closeMobDrawer(){
     if(empty) empty.style.display='none';
 
     try {
-      var [detAnul, anulRec, cabData] = await Promise.all([
+      var [detAnul, anulRec, cabData, prodData] = await Promise.all([
         apiGet('Detalle_Anulaciones').catch(function(){ return []; }),
         apiGet('Anulaciones_Recepcion').catch(function(){ return []; }),
-        apiGet('Mov_Cabecera').catch(function(){ return []; })
+        apiGet('Mov_Cabecera').catch(function(){ return []; }),
+        apiGet('productos').catch(function(){ return []; })
       ]);
+      // Construir mapa código→descripción desde catálogo
+      var _prodMap = {};
+      (prodData||[]).forEach(function(p){
+        var cod = String(p.CODIGO||p.codigo||'').trim();
+        if(cod) _prodMap[cod] = String(p.DESCRIPCION||p.descripcion||p.MATERIAL||'');
+      });
+      // Helper local con fallback a getDescProd global
+      function _getDesc(cod){
+        cod = String(cod||'').trim();
+        return _prodMap[cod] || (window.getDescProd ? window.getDescProd(cod) : '') || '';
+      }
 
       if(loading) loading.style.display='none';
-      if(!detAnul.length){ if(empty) empty.style.display='block'; if(sub) sub.textContent='0 productos'; return; }
+      // Si Detalle_Anulaciones está vacío, mostrar igual con datos de Anulaciones_Recepcion
+      if(!detAnul.length){
+        if(!anulRec.length){ if(empty) empty.style.display='block'; if(sub) sub.textContent='0 productos'; return; }
+        // Generar filas dummy desde Anulaciones_Recepcion
+        detAnul = anulRec.map(function(a){
+          return { ID_Cab: a.ID_Cab, PRODUCTO:'(ver guía '+String(a.ID_Cab||'')+')', ALMACEN:'—', CANTIDAD:'—', 'LOTE-PROVEEDOR':'—', 'LOTE-SISTEMA':'—', 'FECHA-VECIMIENTO':'—' };
+        });
+      }
 
       if(sub) sub.textContent = detAnul.length+' producto(s) anulado(s)';
       tbody.innerHTML='';
       var empMap = {'1':'AQU ANQA SAC','2':'AQU ANQA II SAC','3':'AQU ANQA SAC CAMPO','4':'AQU ANQA II SAC CAMPO'};
 
       detAnul.forEach(function(d,i){
-        var idCab  = String(d.ID_Cab||'');
+        // ID_Cab puede venir como Ref label o como string directo
+        var idCab  = String(d.ID_Cab||d['ID_Cab']||'');
         var cab    = cabData.find(function(c){ return String(c.ID_Cab||'')===idCab; })||{};
         var anul   = anulRec.find(function(a){ return String(a.ID_Cab||'')===idCab; })||{};
         var empNom = String(anul.EMPRESA||cab.EMPRESA||'—');
         if(empMap[empNom]) empNom = empMap[empNom];
-        var sedeNom2 = String(anul.SEDE||({'99':'PACKING','30':'CAMPO'})[String(cab.SEDE||'')]||'—');
+        var _sedeRaw2 = String(anul.SEDE||cab.SEDE||'—');
+        var sedeNom2 = {'99':'PACKING','30':'CAMPO'}[_sedeRaw2] || _sedeRaw2;
         var guia2  = String(anul['GRE-REMITENTE']||cab['GRE REMITENTE']||'—');
         var prod   = String(d.PRODUCTO||'—');
-        var desc   = '';
-        if(window._PROD_CACHE){
-          var p = _PROD_CACHE.find(function(x){ return x.codigo===prod; });
-          if(p) desc = p.nombre;
-        }
+        var desc = _getDesc(prod);
+        // Traducir SEDE
+        var _sedeRawH = String(anul.SEDE||cab.SEDE||'—');
+        var sedeDispH = ({'99':'PACKING','30':'CAMPO'})[_sedeRawH] || _sedeRawH;
+        // Guía desde anulacion o cabecera
+        var guiaH = String(anul['GRE-REMITENTE']||cab['GRE REMITENTE']||'—');
+        // Producto: código en prod, buscar descripción
+        var prodDesc = _getDesc(prod) || desc || '—';
+
         var tr = document.createElement('tr');
         tr.style.cssText='border-bottom:1px solid #fecaca;background:'+(i%2===0?'#fff8f8':'#fff1f1');
         tr.innerHTML=
-          '<td style="padding:10px 14px;font-size:10px;font-family:monospace;color:#dc2626;white-space:nowrap">'+escH(idCab.slice(0,18))+'</td>'+
+          '<td style="padding:10px 14px;font-size:10px;font-family:monospace;color:#dc2626;white-space:nowrap">'+escH(idCab.slice(0,22))+'</td>'+
           '<td style="padding:10px 14px;font-size:11px;white-space:nowrap">'+escH(empNom)+'</td>'+
-          '<td style="padding:10px 14px;font-family:monospace;font-size:10px;white-space:nowrap">'+escH(String(cab['GRE REMITENTE']||'—'))+'</td>'+
-          '<td style="padding:10px 14px"><div style="font-weight:700;color:#1e3a5f;font-size:11px">'+escH(prod)+'</div><div style="font-size:10px;color:#6a8faf">'+escH(desc)+'</div></td>'+
+          '<td style="padding:10px 14px;white-space:nowrap"><span style="background:rgba(99,102,241,.12);color:#4338ca;font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;font-family:monospace">'+escH(sedeDispH)+'</span></td>'+
+          '<td style="padding:10px 14px;font-family:monospace;font-size:10px;white-space:nowrap">'+escH(guiaH)+'</td>'+
+          '<td style="padding:10px 14px;font-family:monospace;font-size:10px;font-weight:700;color:#1e3a5f;white-space:nowrap">'+escH(prod)+'</td>'+
+          '<td style="padding:10px 14px;font-size:11px;min-width:160px">'+escH(prodDesc||'—')+'</td>'+
           '<td style="padding:10px 14px;font-size:11px;white-space:nowrap">'+escH(String(d.ALMACEN||'—'))+'</td>'+
-          '<td style="padding:10px 14px;text-align:center;font-weight:700">'+escH(String(d.CANTIDAD||'0'))+'</td>'+
+          '<td style="padding:10px 14px;text-align:center;font-weight:700;font-size:13px">'+escH(String(d.CANTIDAD||'0'))+'</td>'+
           '<td style="padding:10px 14px;font-family:monospace;font-size:10px;white-space:nowrap">'+escH(String(d['LOTE-PROVEEDOR']||'—'))+'</td>'+
           '<td style="padding:10px 14px;font-family:monospace;font-size:10px;color:#3a7bd5;font-weight:700;white-space:nowrap">'+escH(String(d['LOTE-SISTEMA']||'—'))+'</td>'+
           '<td style="padding:10px 14px;font-size:10px;white-space:nowrap">'+escH(String(d['FECHA-VECIMIENTO']||'—'))+'</td>'+
-          '<td style="padding:10px 14px;font-weight:600;color:#b91c1c;white-space:nowrap">'+escH(String(anul.MOTIVO||'—'))+'</td>'+
+          '<td style="padding:10px 14px;font-weight:700;color:#b91c1c;white-space:nowrap">'+escH(String(anul.MOTIVO||'—'))+'</td>'+
           '<td style="padding:10px 14px;font-size:10px;white-space:nowrap">'+escH(String(anul['FECHA-ANULACION']||'—'))+'</td>'+
           '<td style="padding:10px 14px;font-size:11px;white-space:nowrap">'+escH(String(anul['USUARIO-ANULACION']||'—').split('·')[0].trim())+'</td>';
         tbody.appendChild(tr);
@@ -11812,6 +11856,7 @@ function closeMobDrawer(){
             item: {
               codigo:       String(det.PRODUCTO||''),
               producto:     String(det.PRODUCTO||''),
+              descripcion:  window.getDescProd?window.getDescProd(String(det.PRODUCTO||'')):'',
               lote:         String(det['LOTE-SISTEMA']||''),
               loteProv:     String(det['LOTE-PROVEEDOR']||''),
               cantidad:     Number(det.CANTIDAD||0),
@@ -11974,7 +12019,12 @@ function closeMobDrawer(){
         '<td style="padding:10px 14px;font-size:11px;color:var(--txt2)">'+escH(sede)+'</td>'+
         '<td style="padding:10px 14px;font-family:JetBrainsMono,monospace;font-size:10px;color:var(--txt2);white-space:nowrap">'+fmtDate(r.rec.fechaSistema)+'</td>'+
         '<td style="padding:10px 14px">'+almBadge(r.rec.almacenDest)+'</td>'+
-        '<td style="padding:10px 14px;font-size:12px;font-weight:600;color:var(--txt)">'+escH(r.item.producto||'—')+'</td>'+
+        '<td style="padding:10px 14px">'+(function(){
+          var _cod=String(r.item.producto||'—');
+          var _desc=window.getDescProd?window.getDescProd(_cod):'';
+          return '<div style="font-family:JetBrainsMono,monospace;font-size:10px;font-weight:700;color:#2563eb">'+escH(_cod)+'</div>'+
+                 (_desc?'<div style="font-size:11px;color:var(--txt);margin-top:2px">'+escH(_desc)+'</div>':'');
+        })()+'</td>'+
         '<td style="padding:10px 14px">'+
           (r.item.lote
             ? '<span style="background:rgba(99,102,241,.1);color:#5b21b6;border:1px solid rgba(99,102,241,.2);padding:2px 7px;border-radius:4px;font-size:9.5px;font-family:JetBrainsMono,monospace;font-weight:700">L-'+escH(r.item.lote)+'</span>'
