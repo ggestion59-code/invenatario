@@ -965,6 +965,7 @@ window.toggleModule = function(id){
         <div class="nav-item" id="mob-s-vale-lista" onclick="showScreen('vale-lista','mob-s-vale-lista');closeMobDrawer()"><i class="ti ti-list-check" style="font-size:12px;min-width:14px"></i>Solicitudes de Vale</div>
         <div class="nav-item" id="mob-s-vale-aprobar" onclick="showScreen('vale-aprobar','mob-s-vale-aprobar');closeMobDrawer()"><i class="ti ti-checks" style="font-size:12px;min-width:14px;color:#059669"></i>Aprobar Vale</div>
         <div class="nav-item" id="mob-s-vale-historial" onclick="showScreen('vale-historial','mob-s-vale-historial');closeMobDrawer()"><i class="ti ti-history" style="font-size:12px;min-width:14px"></i>Historial de Vales</div>
+        <div class="nav-item" id="mob-s-vale-consumos" onclick="consumosAbrir();closeMobDrawer()"><i class="ti ti-report-analytics" style="font-size:12px;min-width:14px;color:#d97706"></i>Historial de Consumos</div>
       </div>
     </div>
 
@@ -1068,8 +1069,8 @@ window.toggleModule = function(id){
       </div>
     </div>
 
-    <div class="nav-item" id="mob-s-usuarios" onclick="catAbrir('usuarios','lista');closeMobDrawer()"><i class="ti ti-users" style="font-size:14px;min-width:16px"></i>Usuarios</div>
-    <div class="nav-item" id="mob-s-config" onclick="showScreen('config','bnav-config');closeMobDrawer()"><i class="ti ti-settings" style="font-size:14px;min-width:16px"></i>Configuración</div>
+    <div class="nav-item" id="mob-s-usuarios" style="display:none" onclick="usuariosRolAbrir();closeMobDrawer()"><i class="ti ti-users" style="font-size:14px;min-width:16px"></i>Usuarios</div>
+    <div class="nav-item" id="mob-s-config" style="display:none" onclick="showScreen('config','bnav-config');closeMobDrawer()"><i class="ti ti-settings" style="font-size:14px;min-width:16px"></i>Configuración</div>
 
   </div>
 
@@ -1431,6 +1432,7 @@ window.toggleModule = function(id){
         <div class="nav-item" id="s-vale-lista" onclick="showScreen('vale-lista','s-vale-lista');closeMobDrawer()"><i class="ti ti-list-check" style="font-size:12px;min-width:14px"></i>Solicitudes de Vale</div>
         <div class="nav-item" id="s-vale-aprobar" onclick="showScreen('vale-aprobar','s-vale-aprobar');closeMobDrawer()"><i class="ti ti-checks" style="font-size:12px;min-width:14px;color:#059669"></i>Aprobar Vale</div>
         <div class="nav-item" id="s-vale-historial" onclick="showScreen('vale-historial','s-vale-historial');closeMobDrawer()"><i class="ti ti-history" style="font-size:12px;min-width:14px"></i>Historial de Vales</div>
+        <div class="nav-item" id="s-vale-consumos" onclick="consumosAbrir();closeMobDrawer()"><i class="ti ti-report-analytics" style="font-size:12px;min-width:14px;color:#d97706"></i>Historial de Consumos</div>
       </div>
     </div>
 
@@ -1558,10 +1560,10 @@ window.toggleModule = function(id){
       </div>
     </div>
 
-    <div class="nav-item" id="s-usuarios" onclick="catAbrir('usuarios','lista');closeMobDrawer()">
+    <div class="nav-item" id="s-usuarios" style="display:none" onclick="usuariosRolAbrir();closeMobDrawer()">
       <i class="ti ti-users" style="font-size:14px;min-width:16px"></i>Usuarios
     </div>
-    <div class="nav-item" id="s-config" onclick="showScreen('config','s-config');closeMobDrawer()">
+    <div class="nav-item" id="s-config" style="display:none" onclick="showScreen('config','s-config');closeMobDrawer()">
       <i class="ti ti-settings" style="font-size:14px;min-width:16px"></i>Configuración
     </div>
 
@@ -2361,7 +2363,18 @@ window.toggleModule = function(id){
       <div class="pg-sub">AppSheet API · v9.0</div>
       <div class="dc">
 
-        <!-- DIAGNÓSTICO DE CONEXIÓN -->
+        <!-- SINCRONIZACIÓN OFFLINE -->
+        <div class="card">
+          <div class="ch"><span class="ch-t">📲 Datos offline</span></div>
+          <div class="cb">
+            <div style="font-size:11px;color:var(--txt3);margin-bottom:10px;line-height:1.6">
+              Descarga todas las tablas al dispositivo para abrir al instante y consultar sin internet. Útil antes de ir a zonas sin señal. (Para <b>registrar</b> recepciones/traspasos/vales sí necesitas internet.)
+            </div>
+            <div id="sync-last-txt" style="font-size:12px;font-weight:700;color:var(--txt2);margin-bottom:10px">Última sincronización: —</div>
+            <button id="btn-sync-todo" onclick="sincronizarTodo(false)" style="font-size:12px;font-weight:700;padding:9px 16px;border-radius:10px;border:none;background:linear-gradient(135deg,#0d2440,#1e3a5f);color:#fff;cursor:pointer">↻ Sincronizar todo (offline)</button>
+          </div>
+        </div>
+
         <div class="card">
           <div class="ch">
             <span class="ch-t">🔍 Diagnóstico de Conexión</span>
@@ -4332,6 +4345,14 @@ window.toggleModule = function(id){
               <select class="sel" id="vlista-fil-area" onchange="vlistaFiltrar()" style="font-size:12px"><option value="">Todas</option></select>
             </div>
             <div>
+              <label style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--txt3);display:block;margin-bottom:4px">Tipo</label>
+              <select class="sel" id="vlista-fil-tipo" onchange="vlistaFiltrar()" style="font-size:12px">
+                <option value="">Todos</option>
+                <option value="NORMAL" selected>Vale normal</option>
+                <option value="MATERIALES">Materiales (Producción)</option>
+              </select>
+            </div>
+            <div>
               <label class="slabel">Buscar N°</label>
               <input type="text" class="sel" id="vlista-fil-numero" oninput="vlistaFiltrar()" placeholder="VALE-2026-…" style="font-size:12px">
             </div>
@@ -4943,10 +4964,22 @@ var masterCache = (function(){
     });
   }
 
+  /* Borrar una tabla del cache (para forzar refresco tras una escritura) */
+  function deleteTable(tabla){
+    return openDB().then(function(d){
+      return new Promise(function(res){
+        try{ var tx=d.transaction(STORE,'readwrite'); tx.objectStore(STORE).delete(tabla); tx.oncomplete=function(){res();}; tx.onerror=function(){res();}; }
+        catch(e){ res(); }
+      });
+    }).catch(function(){});
+  }
+
   return {
     isMaster:isMaster,
     loadTable:loadTable,
     saveTable:saveTable,
+    deleteTable:deleteTable,
+    listCached:listCached,
     refreshTable:refreshTable,
     preloadAll:preloadAll,
     updateIndicator:updateIndicator
@@ -4957,13 +4990,9 @@ var masterCache = (function(){
 document.addEventListener('DOMContentLoaded', function(){
   var ci = document.getElementById('cache-indicator');
   if(ci) ci.addEventListener('click', function(){
-    if(!navigator.onLine){ showToast('⚠ Sin internet — usando cache local','warn'); return; }
-    showToast('↻ Actualizando tablas maestras…','ok');
-    ci.classList.remove('show');
-    masterCache.preloadAll(function(){
-      showToast('✅ Tablas maestras actualizadas','ok');
-      masterCache.updateIndicator();
-    });
+    if(!navigator.onLine){ showToast('⚠ Sin internet — usando datos locales','warn'); return; }
+    if(window.sincronizarTodo) window.sincronizarTodo(false);
+    else { masterCache.preloadAll(function(){ masterCache.updateIndicator(); }); }
   });
 });
 
@@ -4972,27 +5001,39 @@ document.addEventListener('DOMContentLoaded', function(){
    Tablas maestras → IndexedDB cache (con fallback a red)
    Tablas transaccionales → siempre a la red
 ═══════════════════════════════════════════════════════════════ */
+/* Tablas que se guardan para uso OFFLINE (todas las que la app lee) */
+var OFFLINE_TABLES = ['productos','almacenes','proveedores','Proveedor_gen','Areas','grupos_auditoria','sede','EMPRESA','Usuario',
+  'Stock_Lote','AUDITORIA_CONTEO','Mov_Cabecera','Detalle_Recepcion','Solicitud_Traspaso','Detalle_Solicitud','Detalle_Traspaso_Lote',
+  'Vale_Consumo','Detalle_Vale','Detalle_Vale_Lote','Series_Producto','FUERA_DE_STOCK','ANULACIONES','ANULACIONES_OOS',
+  'Detalle_Anulaciones','Anulaciones_Recepcion','historial_conteos'];
+window.OFFLINE_TABLES = OFFLINE_TABLES;
+/* Tablas "volátiles" (cambian con escrituras) → se invalidan tras cada guardado para volver a traer fresco */
+var _VOLATILE_TABLES = ['Stock_Lote','AUDITORIA_CONTEO','Mov_Cabecera','Detalle_Recepcion','Solicitud_Traspaso','Detalle_Solicitud',
+  'Detalle_Traspaso_Lote','Vale_Consumo','Detalle_Vale','Detalle_Vale_Lote','Series_Producto','FUERA_DE_STOCK','ANULACIONES',
+  'ANULACIONES_OOS','Detalle_Anulaciones','Anulaciones_Recepcion','historial_conteos'];
+
 async function apiGet(tabla) {
-  /* Tablas maestras: intentar cache primero */
-  if(masterCache.isMaster(tabla)){
+  var cacheable = masterCache.isMaster(tabla) || OFFLINE_TABLES.indexOf(tabla) >= 0;
+  if(cacheable){
     var cached = await masterCache.loadTable(tabla).catch(function(){ return null; });
     if(cached && cached.rows && cached.rows.length > 0){
-      /* Si tenemos cache y hay internet, refrescar en background sin bloquear UI */
-      if(navigator.onLine && !cached.fresh){
+      // Hay datos locales → se devuelven AL INSTANTE. Con internet, se refresca en segundo plano (próxima lectura ya fresca).
+      var esMaster = masterCache.isMaster(tabla);
+      if(navigator.onLine && (!esMaster || !cached.fresh)){
         _fetchFromNetwork(tabla).then(function(rows){
           masterCache.saveTable(tabla, rows);
-          masterCache.updateIndicator();
+          if(masterCache.updateIndicator) masterCache.updateIndicator();
         }).catch(function(){});
       }
       return cached.rows;
     }
-    /* No hay cache → intentar red */
-    if(!navigator.onLine) throw new Error('Sin internet y sin datos en cache para: ' + tabla);
+    // No hay datos locales
+    if(!navigator.onLine) return (cached && cached.rows) ? cached.rows : [];   // offline sin cache → vacío (no rompe)
     var rows = await _fetchFromNetwork(tabla);
     await masterCache.saveTable(tabla, rows).catch(function(){});
     return rows;
   }
-  /* Tablas transaccionales: siempre a la red */
+  // Tablas no listadas: comportamiento previo
   if(!navigator.onLine) throw new Error('Sin internet — no se puede acceder a ' + tabla);
   return _fetchFromNetwork(tabla);
 }
@@ -5006,8 +5047,12 @@ var _memInflight = {};   // tabla -> Promise en curso
 var _MEM_TTL = 25000;    // 25 segundos
 
 function _invalidarMem(tabla){
-  if(tabla){ delete _memCache[tabla]; }
-  else { _memCache = {}; }
+  if(tabla){ delete _memCache[tabla]; if(masterCache && masterCache.deleteTable) masterCache.deleteTable(tabla); }
+  else {
+    _memCache = {};
+    // borra de IndexedDB las tablas que cambian con escrituras → la próxima lectura trae datos frescos
+    if(masterCache && masterCache.deleteTable){ _VOLATILE_TABLES.forEach(function(t){ masterCache.deleteTable(t); }); }
+  }
 }
 window._invalidarMem = _invalidarMem;
 
@@ -9531,7 +9576,7 @@ cargarSedes();
 // Idusuario · Nombre · Contraseña · RolUsuario · Empresa
 var USUARIOS_DB = [
   { id:"16f02e7c", nombre:"Jhonatan",       pass:"jhonatan27",   rol:"Admin",   empresa:"AQU ANQA" },
-  { id:"2fc98410", nombre:"BODEGAPACKING",  pass:"ALMACEN2025",  rol:"Usuario", empresa:"AQU ANQA" }
+  { id:"2fc98410", nombre:"BODEGAPACKING",  pass:"ALMACEN2026",  rol:"Admin",   empresa:"AQU ANQA" }
 ];
 
 // Variable global con el usuario autenticado
@@ -9556,8 +9601,69 @@ document.getElementById("login-pass").addEventListener("keydown",function(e){
   if(e.key==="Enter") doLogin();
 });
 
-function doLogin(){
-  var inputUser = (document.getElementById("login-email").value||"").trim().toLowerCase();
+// Normaliza el texto del rol (acepta "SupervisorCampo", "Supervisor Campo", "supervisor_campo", etc.)
+function _normRol(r){
+  var s=(r==null?'':String(r)).toLowerCase().replace(/[_\-\.]/g,' ').replace(/\s+/g,' ').trim();
+  if(s.indexOf('admin')>=0) return 'Admin';
+  if(s.indexOf('auditor')>=0) return 'Auditor';
+  if(s.indexOf('almacenero')>=0 || s.indexOf('almacener')>=0) return 'Almacenero';
+  if(s.indexOf('supervisor')>=0 && s.indexOf('packing')>=0) return 'Supervisor Packing';
+  if(s.indexOf('supervisor')>=0 && (s.indexOf('campo')>=0||s.indexOf('field')>=0)) return 'Supervisor Campo';
+  if(s.indexOf('supervisor')>=0) return 'Supervisor';
+  return 'Usuario';
+}
+window._normRol=_normRol;
+// Determina la sede del usuario: supervisores → según su rol; Admin → ambas; resto → columna Sede (o AMBAS por defecto)
+function _normSede(rol, sedeRaw){
+  var r=_normRol(rol);
+  if(r==='Supervisor Packing') return 'PACKING';
+  if(r==='Supervisor Campo')   return 'CAMPO';
+  if(r==='Admin')              return 'AMBAS';
+  var s=(sedeRaw==null?'':String(sedeRaw)).toLowerCase().trim();
+  if(s.indexOf('packing')>=0 || s==='99') return 'PACKING';
+  if(s.indexOf('campo')>=0   || s==='30') return 'CAMPO';
+  return 'AMBAS'; // por defecto ve ambas hasta que se le asigne sede
+}
+window._normSede=_normSede;
+window._sedeUsuario=function(){ return (_usuarioActual && _usuarioActual.sede) || 'AMBAS'; };
+window._sedeIdUsuario=function(){ var s=window._sedeUsuario(); return s==='PACKING'?'99':(s==='CAMPO'?'30':''); };
+// ¿El usuario actual puede aprobar? (Admin siempre; resto según PuedeAprobar de la tabla)
+window._puedeAprobarYo=function(){
+  if(!_usuarioActual) return false;
+  if(_normRol(_usuarioActual.rol)==='Admin') return true;
+  return !!_usuarioActual.puedeAprobar;
+};
+// ¿El lote tiene identificación de proveedor/lote? (si la tiene, se obliga a elegirlo manualmente)
+window._loteIdentificado=function(l){
+  return !!(String((l&&(l.PROVEEDOR||l.Proveedor))||'').trim() || String((l&&(l.LOTE_PROV||l.Lote_Prov))||'').trim());
+};
+// ¿El vale es de MATERIALES (Producción)? Por columna TIPO_VALE; vales antiguos: por nombre del almacén
+window._valeEsMaterial=function(v){
+  var t=String((v&&v.TIPO_VALE)||'').toUpperCase().trim();
+  if(t==='MATERIALES') return true;
+  if(t==='NORMAL') return false;
+  return String((v&&v.ALMACEN)||'').toUpperCase().indexOf('PRODUCCION')>=0;
+};
+// ¿La fila corresponde a la sede del usuario? (si tiene sede fija)
+window._filaSedeOk=function(sedeVal){
+  var sid=window._sedeIdUsuario?_sedeIdUsuario():''; if(!sid) return true;
+  var s=String(sedeVal==null?'':sedeVal).toUpperCase().trim();
+  if(sid==='99') return s==='99'||s.indexOf('PACK')>=0;
+  if(sid==='30') return s==='30'||s.indexOf('CAMPO')>=0||s.indexOf('AGRI')>=0;
+  return true;
+};
+function _estatusActivo(v){
+  if(v===true) return true;
+  var s=(v==null?'':String(v)).trim().toLowerCase();
+  return s===''||s==='true'||s==='1'||s==='si'||s==='sí'||s==='y'||s==='yes'||s==='activo'||s==='verdadero';
+}
+function _campoUsuario(row, nombres){
+  for(var i=0;i<nombres.length;i++){ var v=row[nombres[i]]; if(v!=null && String(v).trim()!=='') return v; }
+  return '';
+}
+
+async function doLogin(){
+  var inputUser = (document.getElementById("login-email").value||"").trim();
   var inputPass = (document.getElementById("login-pass").value||"").trim();
   var err       = document.getElementById("login-err");
   var btn       = document.querySelector(".login-btn");
@@ -9567,70 +9673,96 @@ function doLogin(){
     err.style.display="block";
     return;
   }
+  btn.disabled = true; btn.textContent = "Verificando…"; err.style.display="none";
 
-  // Animación de carga
-  btn.disabled = true;
-  btn.textContent = "Verificando…";
+  var userLow = inputUser.toLowerCase();
+  var usuario = null;
 
-  setTimeout(function(){
-    // Buscar usuario (por Nombre, Idusuario o Correo — case-insensitive)
-    var usuario = USUARIOS_DB.find(function(u){
-      return u.nombre.toLowerCase() === inputUser ||
-             u.id.toLowerCase()     === inputUser;
-    });
-
-    if(!usuario || usuario.pass !== inputPass){
-      err.textContent = "Usuario o contraseña incorrectos.";
-      err.style.display = "block";
-      document.getElementById("login-pass").value = "";
-      document.getElementById("login-pass").focus();
-      btn.disabled = false;
-      btn.textContent = "Acceder";
-      return;
+  // 1) Autenticar contra la tabla Usuario (AppSheet) — cacheada / offline-aware
+  try{
+    var filas = await apiGet('Usuario');
+    if(Array.isArray(filas) && filas.length){
+      var fila = filas.find(function(u){
+        var nom = String(_campoUsuario(u,['Nombre','nombre','NOMBRE'])||'').trim().toLowerCase();
+        var id  = String(_campoUsuario(u,['Idusuario','idusuario','ID','Id'])||'').trim().toLowerCase();
+        var cor = String(_campoUsuario(u,['Correo','correo','CORREO','Email','email'])||'').trim().toLowerCase();
+        var pwd = String(_campoUsuario(u,['Contraseña','Contrasena','contraseña','contrasena','CONTRASEÑA','Clave','clave','Password','password'])||'');
+        return (nom===userLow || id===userLow || cor===userLow) && pwd===inputPass;
+      });
+      if(fila){
+        var est = _campoUsuario(fila,['Estatus','estatus','ESTATUS','Estado','estado','Activo','activo']);
+        if(est!=='' && !_estatusActivo(est)){
+          err.textContent = "Tu cuenta está desactivada. Contacta al administrador.";
+          err.style.display = "block"; btn.disabled=false; btn.textContent="Acceder"; return;
+        }
+        usuario = {
+          id:      String(_campoUsuario(fila,['Idusuario','idusuario','ID','Id'])||''),
+          nombre:  String(_campoUsuario(fila,['Nombre','nombre','NOMBRE'])||inputUser),
+          rol:     _normRol(_campoUsuario(fila,['RolUsuario','rolusuario','Rol','rol','ROL'])),
+          empresa: String(_campoUsuario(fila,['Empresa','empresa','EMPRESA'])||''),
+          sede:    _normSede(_campoUsuario(fila,['RolUsuario','rolusuario','Rol','rol','ROL']), _campoUsuario(fila,['Sede','sede','SEDE'])),
+          puedeAprobar: (function(v, rolRaw){
+            var s=String(v==null?'':v).trim().toLowerCase();
+            if(s==='si'||s==='sí'||s==='true'||s==='1'||s==='yes') return true;
+            if(s==='no'||s==='false'||s==='0') return false;
+            // Columna vacía: los supervisores de sede aprueban por defecto (es su función)
+            var rn=_normRol(rolRaw);
+            return rn==='Supervisor Packing'||rn==='Supervisor Campo';
+          })(_campoUsuario(fila,['PuedeAprobar','puedeaprobar','PUEDEAPROBAR','Aprueba','aprueba']), _campoUsuario(fila,['RolUsuario','rolusuario','Rol','rol','ROL'])),
+          almacenes: String(_campoUsuario(fila,['Almacenes','almacenes','ALMACENES','Almacen','almacen','ALMACEN'])||'').split(/[,;|]/).map(function(s){return s.trim();}).filter(Boolean)
+        };
+      }
     }
+  }catch(e){ /* sin tabla (offline sin sync) → intenta respaldo local */ }
 
-    // Verificar que el usuario esté activo
-    if(usuario.estatus === false || usuario.estatus === "FALSE"){
-      err.textContent = "Tu cuenta está desactivada. Contacta al administrador.";
-      err.style.display = "block";
-      btn.disabled = false;
-      btn.textContent = "Acceder";
-      return;
-    }
+  // 2) Respaldo de emergencia: lista local (por si la tabla no cargó)
+  if(!usuario){
+    var u = USUARIOS_DB.find(function(u){ return u.nombre.toLowerCase()===userLow || u.id.toLowerCase()===userLow; });
+    if(u && u.pass===inputPass){ usuario = { id:u.id, nombre:u.nombre, rol:_normRol(u.rol), empresa:u.empresa, sede:_normSede(u.rol,''), puedeAprobar:(_normRol(u.rol)==='Admin'), almacenes:[] }; }
+  }
 
-    // ✅ Login exitoso
-    _usuarioActual = usuario;
-    var recuerdame = document.getElementById("login-rec").checked;
-    if(recuerdame){
-      sessionStorage.setItem("auditstock_user", JSON.stringify(usuario));
-    }
+  if(!usuario){
+    err.textContent = "Usuario o contraseña incorrectos.";
+    err.style.display = "block";
+    document.getElementById("login-pass").value = "";
+    document.getElementById("login-pass").focus();
+    btn.disabled = false; btn.textContent = "Acceder";
+    return;
+  }
 
-    _aplicarPerfilUsuario(usuario);
+  // ✅ Login exitoso
+  _usuarioActual = usuario;
+  if(document.getElementById("login-rec") && document.getElementById("login-rec").checked){
+    sessionStorage.setItem("auditstock_user", JSON.stringify(usuario));
+  }
+  _aplicarPerfilUsuario(usuario);
 
-    var ov = document.getElementById("login-overlay");
-    ov.style.transition = "opacity .45s ease";
-    ov.style.opacity = "0";
-    setTimeout(function(){ ov.style.display="none"; }, 450);
-    setTimeout(function(){ masterCache.preloadAll(); }, 800);
+  var ov = document.getElementById("login-overlay");
+  ov.style.transition = "opacity .45s ease";
+  ov.style.opacity = "0";
+  setTimeout(function(){ ov.style.display="none"; }, 450);
+  btn.disabled = false; btn.textContent = "Acceder";
 
-    showToast("¡Bienvenido, " + usuario.nombre + "! (" + usuario.rol + ")", "ok");
-
-  }, 600); // pequeño delay para sensación de verificación real
+  showToast("¡Bienvenido, " + usuario.nombre + "! (" + usuario.rol + ")", "ok");
 }
 
 // Aplica el nombre/rol/empresa del usuario al sidebar y topbar
 // ═══════════════ PERMISOS POR ROL ═══════════════
 // Admin: todo · Supervisor: operación (sin catálogos) · Usuario: recepción + solicitar traspaso + ver stock
 function aplicarPermisos(rol){
+  if(typeof _normRol==='function') rol=_normRol(rol);
   rol = rol || (_usuarioActual && _usuarioActual.rol) || 'Usuario';
-  var OPER = ['mod-recepcion','mod-traspasos','mod-vale','mod-kardex','mod-conteo','mod-stock','mod-lotes','mod-reportes'];
+  // Matriz: SupervisorPacking/Campo = aprueban + ven/registran recepciones + reportes de su sede.
+  // Supervisor (a secas) = consume de sus almacenes: solicita traspaso, genera vale, ve stock/kardex. No aprueba, no recepciona.
+  var OPER_SEDE = ['mod-recepcion','mod-traspasos','mod-vale','mod-kardex','mod-conteo','mod-stock','mod-lotes','mod-reportes'];
   var PERMISOS = {
     Admin:                { modulos:'*' },
-    Supervisor:           { modulos:OPER, reportes:'both' },     // ve todo lo operativo + ambos reportes
-    'Supervisor Packing': { modulos:OPER, reportes:'packing' },  // solo reportes de Packing
-    'Supervisor Campo':   { modulos:OPER, reportes:'campo' },    // solo reportes de Campo
+    Supervisor:           { modulos:['mod-traspasos','mod-vale','mod-stock','mod-kardex'], ocultarItems:['s-traspaso-aprobar','s-vale-aprobar'] },
+    'Supervisor Packing': { modulos:OPER_SEDE, reportes:'packing' },
+    'Supervisor Campo':   { modulos:OPER_SEDE, reportes:'campo' },
+    Almacenero:           { modulos:OPER_SEDE, reportes:'sede' },  // como supervisor de sede: registra recepciones, kardex, stock, reportes de SU sede (columna SEDE)
     Auditor:              { modulos:['mod-conteo'] },            // SOLO Conteo de Auditoría y sus submenús
-    Usuario:              { modulos:['mod-recepcion','mod-traspasos','mod-stock'], ocultarItems:['s-traspaso-aprobar','s-traspaso-valemat'] }
+    Usuario:              { modulos:['mod-traspasos','mod-vale','mod-stock'], ocultarItems:['s-traspaso-aprobar','s-traspaso-valemat','s-vale-aprobar'] }
   };
   var TODOS = ['mod-recepcion','mod-traspasos','mod-vale','mod-kardex','mod-conteo','mod-stock','mod-productos','mod-lotes','mod-almacenes','mod-proveedores','mod-reportes'];
   var cfg = PERMISOS[rol] || PERMISOS.Usuario;
@@ -9642,8 +9774,12 @@ function aplicarPermisos(rol){
   TODOS.forEach(function(m){ var show=todo||(cfg.modulos.indexOf(m)>=0); ['','mob-'].forEach(function(pre){ var b=_box(pre+m); if(b) b.style.display = show?'':'none'; }); });
   // 3) ocultar ítems específicos del rol
   (cfg.ocultarItems||[]).forEach(function(it){ ['','mob-'].forEach(function(pre){ var el=document.getElementById(pre+it); if(el) el.style.display='none'; }); });
-  // 4) submenús de Reportes según el tipo de supervisor (packing / campo / ambos)
+  // 4) submenús de Reportes según el tipo de supervisor (packing / campo / ambos / sede del usuario)
   var repView = todo ? 'both' : (cfg.reportes || 'both');
+  if(repView==='sede'){
+    var us=(window._sedeUsuario?_sedeUsuario():'AMBAS');
+    repView = us==='PACKING' ? 'packing' : (us==='CAMPO' ? 'campo' : 'both');
+  }
   function _repGrp(grp, show){
     ['','mob-'].forEach(function(pre){
       var h=document.getElementById(pre+'mod-rep-'+grp+'-hdr');
@@ -9654,8 +9790,27 @@ function aplicarPermisos(rol){
   }
   _repGrp('packing', repView==='both'||repView==='packing');
   _repGrp('campo',   repView==='both'||repView==='campo');
-  // 5) menú Usuarios y Configuración: solo Admin
-  ['s-usuarios','mob-s-usuarios','s-config','mob-s-config'].forEach(function(id){ var el=document.getElementById(id); if(el) el.style.display=(rol==='Admin')?'':'none'; });
+  // 5) menú Usuarios y Configuración: solo Admin (nacen ocultos; solo se muestran aquí)
+  var esAdmin = (rol==='Admin');
+  ['s-usuarios','mob-s-usuarios','s-config','mob-s-config'].forEach(function(id){ var el=document.getElementById(id); if(el) el.style.display=esAdmin?'':'none'; });
+  // Además, bloquear la APERTURA de esas pantallas para no-Admin (defensa extra)
+  if(!window._guardPantallasAdmin){
+    window._guardPantallasAdmin = true;
+    var _ssOrig = window.showScreen;
+    window.showScreen = function(name){
+      var r = (_usuarioActual && _normRol(_usuarioActual.rol)==='Admin');
+      if((name==='config' || name==='usuarios-rol' || name==='usuarios') && !r){
+        if(window.showToast) showToast('⛔ Solo el administrador puede entrar aquí','warn');
+        return;
+      }
+      return _ssOrig.apply(this, arguments);
+    };
+  }
+  // 6) APROBACIONES: solo Admin o quien tenga PuedeAprobar = SI en la tabla Usuario
+  var puedeAprobar = (rol==='Admin') || !!(_usuarioActual && _usuarioActual.puedeAprobar);
+  if(!puedeAprobar){
+    ['s-traspaso-aprobar','s-vale-aprobar'].forEach(function(it){ ['','mob-'].forEach(function(pre){ var el=document.getElementById(pre+it); if(el) el.style.display='none'; }); });
+  }
 }
 
 function _aplicarPerfilUsuario(u){
@@ -9681,6 +9836,8 @@ function _aplicarPerfilUsuario(u){
 
   // Mostrar/ocultar menús según el rol
   try{ aplicarPermisos(u.rol); }catch(e){ console.warn('[permisos]', e.message); }
+  try{ if(window._fijarSedeConReintentos) window._fijarSedeConReintentos(); }catch(e){}
+  try{ if(window._autoSyncSiToca) window._autoSyncSiToca(); }catch(e){}
 }
 
 // Función de cierre de sesión (se puede llamar desde un botón)
@@ -14841,7 +14998,7 @@ function closeMobDrawer(){
           '<td style="padding:9px 12px;font-size:12px;font-weight:500;color:#1e293b">'+escH(_desc||'—')+'</td>'+
           '<td style="padding:9px 12px;font-size:11px;color:#64748b;text-align:center">'+escH(_umd||'—')+'</td>'+
           '<td style="padding:9px 12px;text-align:right;font-family:monospace;font-size:13px;font-weight:700;color:#1e293b">'+escH(String(_cant))+'</td>'+
-          '<td style="padding:9px 12px;font-size:11px" data-apro-lotecell="'+escH(_cod)+'"><span style="color:#94a3b8">— sin asignar —</span></td>'+
+          '<td style="padding:9px 12px;font-size:11px" data-apro-lotecell="'+escH(_cod)+'" data-apro-cant="'+_cant+'"><span style="color:#94a3b8">— sin asignar —</span></td>'+
           '<td style="padding:9px 12px;text-align:center">'+
             (_esPend
               ? '<button onclick="aproAbrirLotes(\''+escH(_cod)+'\',\''+escH(_desc).replace(/'/g,"")+'\','+_cant+')" style="padding:6px 12px;border-radius:7px;border:1.5px dashed #0f9d63;background:#e8f7ef;color:#0c7f50;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap">+ Asignar lotes</button>'+
@@ -15271,19 +15428,59 @@ function closeMobDrawer(){
   };
 
   window.aproEjecutar = async function(){
+    if(!window._puedeAprobarYo || !_puedeAprobarYo()){ if(window.showToast) showToast('⛔ Tu usuario no tiene permiso para aprobar','warn'); return; }
     if(!_aproSolActual){ showToast('⚠ Carga una solicitud primero','warn'); return; }
     var sol = _aproSolActual;
     var resp = document.getElementById('apro-responsable');
     var respNom = resp ? resp.value.trim() : '';
 
-    if(!confirm('¿Aprobar solicitud '+sol.NUMERO+'?\nOrigen: '+sol['ALM-ORIGEN']+'\nDestino: '+sol['ALM-DESTINO'])) return;
-
-    // Aviso si hay ítems sin lote asignado (se permite parcial)
-    var _nAsign = Object.keys(_aproAsign).length;
-    var _nItems = document.querySelectorAll('[data-apro-lotecell]').length;
-    if(_nItems>0 && _nAsign<_nItems){
-      if(!confirm('⚠ '+(_nItems-_nAsign)+' de '+_nItems+' ítem(s) NO tienen lote asignado.\n\nEsos ítems se aprobarán sin descontar stock por lote.\n¿Continuar de todos modos?')) return;
+    // VALIDACIÓN POR ÍTEM (bloqueante): si el producto tiene lotes con stock → debe elegir lote y proveedor;
+    // si no hay stock → no se puede aprobar; asignación parcial → confirmación explícita.
+    var _cellsV = document.querySelectorAll('[data-apro-lotecell]');
+    if(_cellsV.length){
+      try{ await aproCargarStockLote(); }catch(eC){}
+      var _faltaT=[], _sinStockT=[], _parcialT=[], _autoT=[];
+      _cellsV.forEach(function(cell){
+        var codI=cell.getAttribute('data-apro-lotecell');
+        var cantReq=Number(cell.getAttribute('data-apro-cant')||0);
+        var asigs=_aproAsign[codI]||[];
+        var sumA=asigs.reduce(function(s,x){ return s+(x.asignUnid||0); },0);
+        if(cantReq>0 && sumA>=cantReq) return;                 // ítem completo ✓
+        var lotes=[]; try{ lotes=aproLotesDe(codI, sol['ALM-ORIGEN'])||[]; }catch(eL){}
+        var disp=lotes.reduce(function(s,l){ return s+(Number(l.STOCK_UNID||l.Stock_Unid||0)||0); },0);
+        if(disp<=0 && sumA<=0){ _sinStockT.push(codI); return; }   // sin stock → bloquear
+        var identif = lotes.some(function(l){ return window._loteIdentificado(l); });
+        if(sumA<=0 && identif){ _faltaT.push(codI); return; }      // lote con proveedor → debe elegirlo
+        if(sumA<cantReq && !identif){
+          // material SIN lote identificado → asignación automática FIFO (descuenta stock igual)
+          var rest=cantReq-sumA, prevIds={}; asigs.forEach(function(a){ prevIds[String(a.ID_Lote)]=1; });
+          var nuevos=[];
+          lotes.slice().sort(function(a,b){ return String(a.ID_Lote||'').localeCompare(String(b.ID_Lote||'')); }).forEach(function(l){
+            if(rest<=0) return;
+            var idL=String(l.ID_Lote||l.Id_Lote||''); if(!idL||prevIds[idL]) return;
+            var d=Number(l.STOCK_UNID||l.Stock_Unid||0)||0; if(d<=0) return;
+            var usar=Math.min(d,rest); rest-=usar;
+            nuevos.push({ID_Lote:idL,prov:String(l.PROVEEDOR||l.Proveedor||''),loteProv:String(l.LOTE_PROV||l.Lote_Prov||''),loteSist:String(l.LOTE_SIST||l.Lote_Sist||''),vcto:String(l.FECHA_VCTO||l.Fecha_Vcto||''),presentacion:String(l.PRESENTACION||l.Presentacion||''),factor:Number(l.FACTOR_CONV||l.Factor_Conv||0)||0,dispUnid:d,asignUnid:usar});
+          });
+          if(nuevos.length){ _aproAsign[codI]=asigs.concat(nuevos); _autoT.push(codI); sumA=cantReq-rest; }
+          if(sumA<cantReq) _parcialT.push(codI+' ('+sumA+'/'+cantReq+')');
+          return;
+        }
+        if(cantReq>0 && sumA<cantReq) _parcialT.push(codI+' ('+sumA+'/'+cantReq+')');
+      });
+      if(_autoT.length) showToast('📦 Stock sin lote de proveedor: asignado automáticamente para '+_autoT.join(', '),'ok',5000);
+      if(_sinStockT.length){
+        showToast('🚫 Sin stock disponible en '+(sol['ALM-ORIGEN']||'el origen')+' para: '+_sinStockT.join(', ')+'. No se puede aprobar el traspaso.','err',9000);
+        return;
+      }
+      if(_faltaT.length){
+        showToast('🔒 Elige el lote y proveedor para: '+_faltaT.join(', ')+'. Usa "+ Asignar lotes" en cada ítem.','warn',9000);
+        return;
+      }
+      if(_parcialT.length && !confirm('⚠ Asignación PARCIAL (asignado/solicitado):\n'+_parcialT.join('\n')+'\n\n¿Aprobar el traspaso parcial de todos modos?')) return;
     }
+
+    if(!confirm('¿Aprobar solicitud '+sol.NUMERO+'?\nOrigen: '+sol['ALM-ORIGEN']+'\nDestino: '+sol['ALM-DESTINO'])) return;
 
     var btn = document.getElementById('btn-apro-aprobar');
     if(btn){ btn.disabled=true; btn.innerHTML='⏳ Procesando…'; }
@@ -15495,6 +15692,8 @@ function closeMobDrawer(){
   };
 
   window.aproRechazar = async function(){
+    if(!window._puedeAprobarYo || !_puedeAprobarYo()){ if(window.showToast) showToast('⛔ Tu usuario no tiene permiso para aprobar','warn'); return; }
+
     if(!_aproSolActual){ showToast('⚠ Carga una solicitud primero','warn'); return; }
     var motivo = prompt('Motivo del rechazo (obligatorio):');
     if(!motivo) return;
@@ -15566,6 +15765,11 @@ function closeMobDrawer(){
         var mc=document.getElementById('vale-motivo-cod'), mdd=document.getElementById('vale-motivo-desc');
         if(mc && !mc.value) mc.value='SCP';
         if(mdd && !mdd.value) mdd.value='SALIDA PARA CONSUMO - PRODUCCION PLANTA';
+      } else if(window._sedeUsuario && _sedeUsuario()==='CAMPO'){
+        // Sede CAMPO: motivo por defecto SCA (SALIDA PARA CONSUMO - AGRICOLA), editable
+        var mc2=document.getElementById('vale-motivo-cod'), mdd2=document.getElementById('vale-motivo-desc');
+        if(mc2 && !mc2.value) mc2.value='SCA';
+        if(mdd2 && !mdd2.value) mdd2.value='SALIDA PARA CONSUMO - AGRICOLA';
       }
       if(esMat && (!_valeAlmList||!_valeAlmList.length) && typeof apiGet==='function'){
         apiGet('almacenes').then(function(r){ _valeAlmList=Array.isArray(r)?r:[]; valePoblarAlmacenes(); }).catch(function(){});
@@ -15767,7 +15971,7 @@ function closeMobDrawer(){
     var hora=_valeHora(now);
     var usr=(window._usuarioActual&&window._usuarioActual.nombre)||window.USER_NOMBRE||'—';
 
-    var rowCab={ 'NUMERO':num,'SEDE':sede,'EMPRESA':emp,'ALMACEN':alm,'AREA':area,'MOTIVO':motivoCod,'MOTIVO_DESC':motivoDesc,'USUARIO-SOLICITUD':usr,'FECHA-SOLICITUD':fecha,'HORA-SOLICITUD':hora,'GLOSA':glosa,'ESTADO':'PENDIENTE','DISPOSITIVO-SOLICITUD':'Web' };
+    var rowCab={ 'NUMERO':num,'SEDE':sede,'EMPRESA':emp,'ALMACEN':alm,'AREA':area,'MOTIVO':motivoCod,'MOTIVO_DESC':motivoDesc,'TIPO_VALE':(window._valeModo==='materiales'?'MATERIALES':'NORMAL'),'USUARIO-SOLICITUD':usr,'FECHA-SOLICITUD':fecha,'HORA-SOLICITUD':hora,'GLOSA':glosa,'ESTADO':'PENDIENTE','DISPOSITIVO-SOLICITUD':'Web' };
     Object.keys(rowCab).forEach(function(k){ if(rowCab[k]==='') delete rowCab[k]; });
     try{
       var rC=await fetch(BASE+'/Vale_Consumo/Action',{method:'POST',headers:{'ApplicationAccessKey':API_KEY,'Content-Type':'application/json'},body:JSON.stringify({Action:'Add',Rows:[rowCab]})});
@@ -15812,7 +16016,7 @@ function closeMobDrawer(){
     cont.innerHTML='<div style="padding:30px;text-align:center;color:#94a3b8">Cargando vales…</div>';
     try{
       var vales=await apiGet('Vale_Consumo');
-      _valeHistData=(Array.isArray(vales)?vales:[]).sort(function(a,b){ return String(b.NUMERO||'').localeCompare(String(a.NUMERO||'')); });
+      _valeHistData=(Array.isArray(vales)?vales:[]).filter(function(v){ return !window._filaSedeOk || _filaSedeOk(v.SEDE); }).sort(function(a,b){ return String(b.NUMERO||'').localeCompare(String(a.NUMERO||'')); });
       valeRenderHistorial(_valeHistData);
     }catch(e){ cont.innerHTML='<div style="padding:30px;text-align:center;color:#dc2626">Error: '+esc(e.message)+'</div>'; }
   };
@@ -15917,7 +16121,7 @@ function closeMobDrawer(){
     body.innerHTML='<div style="padding:30px;text-align:center;color:#94a3b8">Cargando vales…</div>';
     try{
       var vales=await apiGet('Vale_Consumo');
-      _vlsData=(Array.isArray(vales)?vales:[]).sort(function(a,b){ return String(b['FECHA-SOLICITUD']||'').localeCompare(String(a['FECHA-SOLICITUD']||'')); });
+      _vlsData=(Array.isArray(vales)?vales:[]).filter(function(v){ return !window._filaSedeOk || _filaSedeOk(v.SEDE); }).sort(function(a,b){ return String(b['FECHA-SOLICITUD']||'').localeCompare(String(a['FECHA-SOLICITUD']||'')); });
       valeFiltrarLista('');
     }catch(e){ body.innerHTML='<div style="padding:30px;text-align:center;color:#dc2626">Error: '+esc(e.message)+'</div>'; }
   };
@@ -15967,6 +16171,8 @@ function closeMobDrawer(){
   };
 
   window.valeAbrirAprobar=async function(num){
+    if(!window._puedeAprobarYo || !_puedeAprobarYo()){ if(window.showToast) showToast('⛔ Tu usuario no tiene permiso para aprobar','warn'); return; }
+
     var vales=await apiGet('Vale_Consumo').catch(function(){return[];});
     var v=(Array.isArray(vales)?vales:[]).find(function(x){ return String(x.NUMERO||'')===String(num); });
     var err=document.getElementById('vale-folio-error');
@@ -16186,6 +16392,8 @@ function closeMobDrawer(){
   };
 
   window.valeEjecutarAprobar=async function(){
+    if(!window._puedeAprobarYo || !_puedeAprobarYo()){ if(window.showToast) showToast('⛔ Tu usuario no tiene permiso para aprobar','warn'); return; }
+
     if(!_valeActual){ return; }
     var v=_valeActual;
     if(!confirm('¿Aprobar vale '+v.NUMERO+'?\nÁrea que consume: '+v.AREA+'\nSe descontará el stock de los lotes asignados.')) return;
@@ -16200,6 +16408,75 @@ function closeMobDrawer(){
     var nLotes=0, erroresVale=[];
     var _totAsign=Object.keys(_valeAsign).reduce(function(s,k){ return s+((_valeAsign[k]||[]).length); },0);
     console.log('[VALE-APRO] Lotes asignados a escribir:', _totAsign, JSON.parse(JSON.stringify(_valeAsign)));
+    // VALIDACIÓN POR ÍTEM (bloqueante): con stock+lotes → debe elegir lote y proveedor; sin stock → no se aprueba
+    try{
+      var _stockAllV=await apiGet('Stock_Lote').catch(function(){ return []; });
+      var _almV=String(v.ALMACEN||'').toUpperCase().trim();
+      function _dispDeV(cod){
+        return (_stockAllV||[]).filter(function(s){
+          var sc=String(s.CODIGO||s.Codigo||s.PRODUCTO||'').trim();
+          if(sc!==String(cod).trim()) return false;
+          var sa=String(s.ALMACEN||s.Almacen||'').toUpperCase().trim();
+          if(_almV && sa && sa!==_almV) return false;
+          if(String(s.ESTADO||'').toLowerCase()==='agotado') return false;
+          return (Number(s.STOCK_UNID||s.Stock_Unid||0)||0)>0;
+        }).reduce(function(t,s){ return t+(Number(s.STOCK_UNID||s.Stock_Unid||0)||0); },0);
+      }
+      function _lotesDeV(cod){
+        return (_stockAllV||[]).filter(function(s){
+          var sc=String(s.CODIGO||s.Codigo||s.PRODUCTO||'').trim();
+          if(sc!==String(cod).trim()) return false;
+          var sa=String(s.ALMACEN||s.Almacen||'').toUpperCase().trim();
+          if(_almV && sa && sa!==_almV) return false;
+          if(String(s.ESTADO||'').toLowerCase()==='agotado') return false;
+          return (Number(s.STOCK_UNID||s.Stock_Unid||0)||0)>0;
+        });
+      }
+      var _faltaV=[], _sinStockV=[], _parcialV=[], _autoV=[];
+      (_valeDetActual||[]).forEach(function(d){
+        var cod=String(d.CODIGO||''); var cant=Number(d.CANTIDAD||0)||0;
+        var asig=_valeAsign[cod]||[];
+        var sumA=asig.reduce(function(s,x){ return s+(x.asignUnid||0); },0);
+        if(cant>0 && sumA>=cant) return;
+        var lotes=_lotesDeV(cod);
+        var disp=lotes.reduce(function(t,s){ return t+(Number(s.STOCK_UNID||s.Stock_Unid||0)||0); },0);
+        if(disp<=0 && sumA<=0){ _sinStockV.push(cod); return; }
+        var identif=lotes.some(function(l){ return window._loteIdentificado(l); });
+        if(sumA<=0 && identif){ _faltaV.push(cod); return; }       // lote con proveedor → debe elegirlo
+        if(sumA<cant && !identif){
+          // material SIN lote identificado → asignación automática FIFO (descuenta stock igual)
+          var rest=cant-sumA, prevIds={}; asig.forEach(function(a){ prevIds[String(a.ID_Lote)]=1; });
+          var nuevos=[];
+          lotes.slice().sort(function(a,b){ return String(a.ID_Lote||'').localeCompare(String(b.ID_Lote||'')); }).forEach(function(l){
+            if(rest<=0) return;
+            var idL=String(l.ID_Lote||l.Id_Lote||''); if(!idL||prevIds[idL]) return;
+            var dd=Number(l.STOCK_UNID||l.Stock_Unid||0)||0; if(dd<=0) return;
+            var usar=Math.min(dd,rest); rest-=usar;
+            nuevos.push({ID_Lote:idL,prov:String(l.PROVEEDOR||l.Proveedor||''),loteProv:String(l.LOTE_PROV||l.Lote_Prov||''),vcto:String(l.FECHA_VCTO||l.Fecha_Vcto||''),presentacion:String(l.PRESENTACION||l.Presentacion||''),areaLote:String(l.AREA||l.Area||''),dispUnid:dd,asignUnid:usar});
+          });
+          if(nuevos.length){ _valeAsign[cod]=asig.concat(nuevos); _autoV.push(cod); sumA=cant-rest; }
+          if(sumA<cant) _parcialV.push(cod+' ('+sumA+'/'+cant+')');
+          return;
+        }
+        if(cant>0 && sumA<cant) _parcialV.push(cod+' ('+sumA+'/'+cant+')');
+      });
+      if(_autoV.length) showToast('📦 Stock sin lote de proveedor: asignado automáticamente para '+_autoV.join(', '),'ok',5000);
+      if(_sinStockV.length){
+        if(btn){ btn.disabled=false; btn.innerHTML='✅ Aprobar Vale'; }
+        showToast('🚫 Sin stock disponible en '+(v.ALMACEN||'el almacén')+' para: '+_sinStockV.join(', ')+'. No se puede aprobar el consumo.','err',9000);
+        return;
+      }
+      if(_faltaV.length){
+        if(btn){ btn.disabled=false; btn.innerHTML='✅ Aprobar Vale'; }
+        showToast('🔒 Elige el lote y proveedor para: '+_faltaV.join(', ')+'. Usa "+ Asignar lotes" en cada ítem.','warn',9000);
+        return;
+      }
+      if(_parcialV.length && !confirm('⚠ Asignación PARCIAL (asignado/solicitado):\n'+_parcialV.join('\n')+'\n\n¿Aprobar el consumo parcial de todos modos?')){
+        if(btn){ btn.disabled=false; btn.innerHTML='✅ Aprobar Vale'; }
+        return;
+      }
+    }catch(eVal){ console.warn('[VALE-APRO] validación por ítem:', eVal.message); }
+    _totAsign=Object.keys(_valeAsign).reduce(function(s,k){ return s+((_valeAsign[k]||[]).length); },0);
     if(_totAsign===0){
       if(btn){ btn.disabled=false; btn.innerHTML='✅ Aprobar Vale'; }
       showToast('⚠ No hay lotes asignados. Abre "Asignar lotes" en cada ítem, pon la cantidad y confirma antes de aprobar.','warn',7000);
@@ -16314,10 +16591,14 @@ function closeMobDrawer(){
     var fEst=(document.getElementById('vlista-fil-estado')||{}).value||'';
     var fArea=(document.getElementById('vlista-fil-area')||{}).value||'';
     var fNum=((document.getElementById('vlista-fil-numero')||{}).value||'').trim().toLowerCase();
+    var fTipo=(document.getElementById('vlista-fil-tipo')||{}).value||'';
     var data=VLISTA_DATA.filter(function(r){
       if(fEst && String(r.ESTADO||'PENDIENTE').toUpperCase()!==fEst) return false;
       if(fArea && r.AREA!==fArea) return false;
       if(fNum && String(r.NUMERO||'').toLowerCase().indexOf(fNum)<0) return false;
+      if(fTipo==='MATERIALES' && !window._valeEsMaterial(r)) return false;
+      if(fTipo==='NORMAL' && window._valeEsMaterial(r)) return false;
+      if(window._filaSedeOk && !_filaSedeOk(r.SEDE)) return false;
       return true;
     });
     if(!data.length){ if(wrap)wrap.style.display='none'; if(empty)empty.style.display='block'; if(countEl)countEl.textContent=''; if(sub)sub.textContent='0 vales'; return; }
@@ -17996,6 +18277,414 @@ if('serviceWorker' in navigator){
       .catch(function(e){ console.warn('[SW] no se pudo registrar:', e.message); });
   });
 }
+</script>
+<script>
+/* ═══════════ SINCRONIZACIÓN OFFLINE (descarga todas las tablas a IndexedDB) ═══════════ */
+(function(){
+  var KEY_LAST='_auditstock_lastsync';
+  window._ultimaSync=function(){ var t=parseInt(localStorage.getItem(KEY_LAST)||'0',10); return t||0; };
+  window._textoUltimaSync=function(){
+    var t=window._ultimaSync(); if(!t) return 'nunca';
+    var min=Math.round((Date.now()-t)/60000);
+    if(min<1) return 'recién'; if(min<60) return 'hace '+min+' min';
+    var h=Math.round(min/60); if(h<24) return 'hace '+h+' h'; return 'hace '+Math.round(h/24)+' días';
+  };
+  function _pintarSync(){ var el=document.getElementById('sync-last-txt'); if(el) el.textContent='Última sincronización: '+window._textoUltimaSync(); }
+  window._pintarSync=_pintarSync;
+
+  window.sincronizarTodo=async function(silent){
+    if(!navigator.onLine){ if(!silent && window.showToast) showToast('⚠ Sin internet — no se puede sincronizar','warn'); return; }
+    var tablas=(window.OFFLINE_TABLES||[]).slice();
+    var btn=document.getElementById('btn-sync-todo');
+    if(btn) btn.disabled=true;
+    if(!silent && window.showToast) showToast('↻ Sincronizando '+tablas.length+' tablas…','ok');
+    var ok=0, fail=0, done=0, BATCH=4;
+    async function doOne(t){
+      try{ var rows=await _fetchFromNetwork(t, true); await masterCache.saveTable(t, rows); ok++; }
+      catch(e){ fail++; }
+      done++; if(btn) btn.textContent='Sincronizando… '+done+'/'+tablas.length;
+    }
+    for(var i=0;i<tablas.length;i+=BATCH){
+      await Promise.all(tablas.slice(i,i+BATCH).map(doOne));
+    }
+    localStorage.setItem(KEY_LAST, String(Date.now()));
+    _pintarSync(); if(masterCache.updateIndicator) masterCache.updateIndicator();
+    if(btn){ btn.disabled=false; btn.textContent='↻ Sincronizar todo (offline)'; }
+    if(!silent && window.showToast) showToast('✅ Listo: '+ok+' tablas guardadas para offline'+(fail?(' · '+fail+' con error'):''),'ok');
+  };
+
+  // Auto-sincronización silenciosa: si hay internet y la última fue hace más de 10 min
+  window._autoSyncSiToca=function(){
+    try{
+      if(!navigator.onLine) return;
+      if(Date.now()-window._ultimaSync() > 10*60*1000){
+        setTimeout(function(){ window.sincronizarTodo(true); }, 4000);
+      }
+    }catch(e){}
+  };
+
+  document.addEventListener('DOMContentLoaded', _pintarSync);
+})();
+</script>
+<script>
+/* ═══════════ BLOQUEO POR SEDE según el usuario (PACKING=99 / CAMPO=30 / AMBAS=libre) ═══════════ */
+(function(){
+  var SEL_SEDE_IDS = ['sel-sede','sxa-sede','rec-sede','sol-sede','vale-sede','res-sede'];
+
+  window._fijarSedeUI = function(){
+    try{
+      var sid = (window._sedeIdUsuario ? _sedeIdUsuario() : '') || '';
+      if(!sid) return; // AMBAS (o Admin) → sin restricción
+      SEL_SEDE_IDS.forEach(function(id){
+        var el = document.getElementById(id);
+        if(!el || el.tagName !== 'SELECT') return;
+        var has = false;
+        for(var i=0;i<el.options.length;i++){ if(String(el.options[i].value)===sid){ has=true; break; } }
+        if(!has) return;                      // aún no cargaron las opciones → próximo intento
+        if(el.value !== sid){
+          el.value = sid;
+          try{ el.dispatchEvent(new Event('change',{bubbles:true})); }catch(e){}
+        }
+        el.disabled = true;
+        el.style.opacity = '.85';
+        el.title = 'Sede fijada según tu usuario ('+(window._sedeUsuario?_sedeUsuario():'')+')';
+      });
+    }catch(e){}
+  };
+
+  function _fijarConReintentos(){ [200, 700, 1500, 3000].forEach(function(t){ setTimeout(window._fijarSedeUI, t); }); }
+  window._fijarSedeConReintentos = _fijarConReintentos;
+
+  // Cada vez que se abre una pantalla, volver a fijar (los selects se pueblan al entrar)
+  if(typeof window.showScreen === 'function'){
+    var _ss = window.showScreen;
+    window.showScreen = function(){
+      var r = _ss.apply(this, arguments);
+      _fijarConReintentos();
+      try{ if(window._usuarioActual && typeof aplicarPermisos==='function') aplicarPermisos(_usuarioActual.rol); }catch(e){}
+      return r;
+    };
+  }
+  document.addEventListener('DOMContentLoaded', _fijarConReintentos);
+})();
+</script>
+<script>
+/* ═══════════ GESTIÓN DE USUARIOS Y ROLES (solo Admin) ═══════════ */
+(function(){
+  var ROLES=['Admin','Supervisor','SupervisorPacking','SupervisorCampo','Almacenero','Auditor','Usuario'];
+  var SEDES=['AMBAS','PACKING','CAMPO'];
+  var _usuData=[];
+
+  function _e(s){ return (typeof escH==='function')?escH(String(s==null?'':s)):String(s==null?'':s); }
+  function _selHtml(opts, val, extra){
+    var v=String(val==null?'':val);
+    return '<select '+(extra||'')+' style="padding:6px 8px;border:1px solid var(--border2);border-radius:7px;background:var(--bg);color:var(--txt);font-size:12px">'+
+      opts.map(function(o){ return '<option value="'+_e(o)+'"'+(o.toLowerCase()===v.toLowerCase()?' selected':'')+'>'+_e(o)+'</option>'; }).join('')+'</select>';
+  }
+
+  function ensureScreen(){
+    if(document.getElementById('screen-usuarios-rol')) return;
+    var any=document.querySelector('.screen'); if(!any) return;
+    var sc=document.createElement('div');
+    sc.className='screen'; sc.id='screen-usuarios-rol';
+    sc.innerHTML=
+      '<div style="max-width:1250px;margin:0 auto;padding:6px 2px">'+
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px">'+
+          '<div><h2 style="margin:0;font-size:21px;font-weight:800;color:var(--txt)">👥 Usuarios y Roles</h2>'+
+            '<div style="font-size:12px;color:var(--txt3);margin-top:2px">Asigna rol, sede y permisos de aprobación. Los cambios se guardan en la tabla Usuario.</div></div>'+
+          '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+
+            '<input id="usu-buscar" oninput="usuariosRolFiltrar()" placeholder="Buscar usuario…" style="padding:9px 12px;border:1px solid var(--border2);border-radius:8px;background:var(--bg);color:var(--txt);font-size:13px;min-width:180px">'+
+            '<button onclick="usuariosRolCargar(true)" style="padding:9px 12px;border:1px solid var(--border2);border-radius:8px;background:var(--bg);color:var(--txt2);cursor:pointer;font-size:13px" title="Actualizar"><i class="ti ti-refresh"></i></button>'+
+            '<button onclick="usuariosRolNuevoToggle()" style="padding:9px 16px;border:none;border-radius:8px;background:#059669;color:#fff;font-weight:700;cursor:pointer;font-size:13px"><i class="ti ti-plus"></i> Nuevo usuario</button>'+
+          '</div>'+
+        '</div>'+
+        '<div style="font-size:11px;color:var(--txt3);margin-bottom:12px;line-height:1.7;background:var(--card,#fff);border:1px solid var(--border);border-radius:10px;padding:10px 14px">'+
+          '<b>Roles:</b> Admin = todo · Supervisor = operación ambas sedes · SupervisorPacking / SupervisorCampo = operación de su sede · Auditor = solo conteo de auditoría · Usuario = vales, solicitudes de traspaso y stock.<br>'+
+          '<b>PuedeAprobar</b> (solo supervisores): SI = ve los menús Aprobar Traspaso / Aprobar Vale.'+
+        '</div>'+
+        '<div id="usu-form" style="display:none;background:var(--card,#fff);border:1px solid var(--border2);border-radius:12px;padding:16px;margin-bottom:14px"></div>'+
+        '<div style="overflow:auto;border:1px solid var(--border);border-radius:12px">'+
+          '<table style="width:100%;border-collapse:collapse;font-size:12.5px">'+
+            '<thead><tr style="background:#0d2440">'+
+              ['Nombre','Correo','Empresa','Rol','Sede','PuedeAprobar','Activo',''].map(function(h){ return '<th style="padding:10px 12px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#9fb6d4;white-space:nowrap">'+h+'</th>'; }).join('')+
+            '</tr></thead><tbody id="usu-tbody"></tbody>'+
+          '</table>'+
+        '</div>'+
+      '</div>';
+    any.parentNode.appendChild(sc);
+  }
+
+  window.usuariosRolAbrir=function(){
+    ensureScreen();
+    if(typeof showScreen==='function') showScreen('usuarios-rol');
+    usuariosRolCargar(false);
+  };
+
+  window.usuariosRolCargar=async function(force){
+    ensureScreen();
+    var tb=document.getElementById('usu-tbody'); if(!tb) return;
+    tb.innerHTML='<tr><td colspan="8" style="padding:30px;text-align:center;color:var(--txt3)">Cargando…</td></tr>';
+    try{
+      _usuData = force ? await _fetchFromNetwork('Usuario', true) : await apiGet('Usuario');
+      if(force){ try{ await masterCache.saveTable('Usuario', _usuData); }catch(e){} }
+    }catch(e){
+      tb.innerHTML='<tr><td colspan="8" style="padding:30px;text-align:center;color:#dc2626">Error: '+_e(e.message)+'</td></tr>'; return;
+    }
+    usuariosRolRender(_usuData);
+  };
+
+  window.usuariosRolFiltrar=function(){
+    var q=(document.getElementById('usu-buscar')||{value:''}).value.toLowerCase();
+    usuariosRolRender(_usuData.filter(function(u){
+      return !q || String(u.Nombre||'').toLowerCase().indexOf(q)>=0 || String(u.Correo||'').toLowerCase().indexOf(q)>=0 || String(u.RolUsuario||'').toLowerCase().indexOf(q)>=0;
+    }));
+  };
+
+  function usuariosRolRender(rows){
+    var tb=document.getElementById('usu-tbody'); if(!tb) return;
+    if(!rows.length){ tb.innerHTML='<tr><td colspan="8" style="padding:30px;text-align:center;color:var(--txt3)">Sin usuarios</td></tr>'; return; }
+    tb.innerHTML=rows.map(function(u,i){
+      var id=_e(u.Idusuario||u.ID||'');
+      var act=String(u.Estatus==null?'TRUE':u.Estatus).toUpperCase()!=='FALSE';
+      var pa=String(u.PuedeAprobar||'NO').trim().toUpperCase(); if(pa!=='SI') pa='NO';
+      return '<tr data-id="'+id+'" style="border-top:1px solid var(--border)">'+
+        '<td style="padding:8px 12px;font-weight:700">'+_e(u.Nombre||'')+'</td>'+
+        '<td style="padding:8px 12px;color:var(--txt3)">'+_e(u.Correo||'')+'</td>'+
+        '<td style="padding:8px 12px">'+_e(u.Empresa||'')+'</td>'+
+        '<td style="padding:8px 12px">'+_selHtml(ROLES, u.RolUsuario||'Usuario', 'id="usu-rol-'+i+'"')+'</td>'+
+        '<td style="padding:8px 12px">'+_selHtml(SEDES, u.SEDE||u.Sede||'AMBAS', 'id="usu-sede-'+i+'"')+'</td>'+
+        '<td style="padding:8px 12px">'+_selHtml(['SI','NO'], pa, 'id="usu-pa-'+i+'"')+'</td>'+
+        '<td style="padding:8px 12px">'+_selHtml(['TRUE','FALSE'], act?'TRUE':'FALSE', 'id="usu-act-'+i+'"')+'</td>'+
+        '<td style="padding:8px 12px"><button onclick="usuariosRolGuardar('+i+',\''+id+'\')" id="usu-save-'+i+'" style="padding:7px 14px;border:none;border-radius:7px;background:#0d6efd;color:#fff;font-weight:700;cursor:pointer;font-size:12px">Guardar</button></td>'+
+      '</tr>';
+    }).join('');
+  }
+
+  window.usuariosRolGuardar=async function(i, id){
+    var btn=document.getElementById('usu-save-'+i);
+    var row={
+      'Idusuario': id,
+      'RolUsuario': (document.getElementById('usu-rol-'+i)||{}).value||'Usuario',
+      'SEDE':       (document.getElementById('usu-sede-'+i)||{}).value||'AMBAS',
+      'PuedeAprobar': (document.getElementById('usu-pa-'+i)||{}).value||'NO',
+      'Estatus':    (document.getElementById('usu-act-'+i)||{}).value||'TRUE'
+    };
+    if(btn){ btn.disabled=true; btn.textContent='…'; }
+    try{
+      var r=await fetch(BASE+'/Usuario/Action',{method:'POST',headers:{'ApplicationAccessKey':API_KEY,'Content-Type':'application/json'},body:JSON.stringify({Action:'Edit',Rows:[row]})});
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      _invalidarMem('Usuario');
+      if(window.showToast) showToast('✅ Usuario actualizado','ok');
+      if(btn){ btn.textContent='✓'; btn.style.background='#059669'; setTimeout(function(){ btn.textContent='Guardar'; btn.style.background='#0d6efd'; btn.disabled=false; },1200); }
+    }catch(e){
+      if(window.showToast) showToast('❌ No se pudo guardar: '+e.message,'err');
+      if(btn){ btn.textContent='Guardar'; btn.disabled=false; }
+    }
+  };
+
+  window.usuariosRolNuevoToggle=function(){
+    var f=document.getElementById('usu-form'); if(!f) return;
+    if(f.style.display!=='none'){ f.style.display='none'; f.innerHTML=''; return; }
+    f.style.display='block';
+    f.innerHTML=
+      '<div style="font-weight:800;margin-bottom:10px;color:var(--txt)">➕ Nuevo usuario</div>'+
+      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px">'+
+        '<div><label style="font-size:10px;color:var(--txt3);text-transform:uppercase">Nombre *</label><input id="usu-n-nombre" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:7px;background:var(--bg);color:var(--txt)"></div>'+
+        '<div><label style="font-size:10px;color:var(--txt3);text-transform:uppercase">Contraseña *</label><input id="usu-n-pass" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:7px;background:var(--bg);color:var(--txt)"></div>'+
+        '<div><label style="font-size:10px;color:var(--txt3);text-transform:uppercase">Correo</label><input id="usu-n-correo" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:7px;background:var(--bg);color:var(--txt)"></div>'+
+        '<div><label style="font-size:10px;color:var(--txt3);text-transform:uppercase">Empresa</label><input id="usu-n-emp" value="AQU ANQA" style="width:100%;padding:8px;border:1px solid var(--border2);border-radius:7px;background:var(--bg);color:var(--txt)"></div>'+
+        '<div><label style="font-size:10px;color:var(--txt3);text-transform:uppercase">Rol</label>'+_selHtml(ROLES,'Usuario','id="usu-n-rol"').replace('style="','style="width:100%;')+'</div>'+
+        '<div><label style="font-size:10px;color:var(--txt3);text-transform:uppercase">Sede</label>'+_selHtml(SEDES,'AMBAS','id="usu-n-sede"').replace('style="','style="width:100%;')+'</div>'+
+        '<div><label style="font-size:10px;color:var(--txt3);text-transform:uppercase">PuedeAprobar</label>'+_selHtml(['NO','SI'],'NO','id="usu-n-pa"').replace('style="','style="width:100%;')+'</div>'+
+      '</div>'+
+      '<div style="margin-top:12px;display:flex;gap:8px">'+
+        '<button onclick="usuariosRolCrear()" id="usu-n-btn" style="padding:9px 18px;border:none;border-radius:8px;background:#059669;color:#fff;font-weight:700;cursor:pointer">Crear usuario</button>'+
+        '<button onclick="usuariosRolNuevoToggle()" style="padding:9px 14px;border:1px solid var(--border2);border-radius:8px;background:var(--bg);color:var(--txt2);cursor:pointer">Cancelar</button>'+
+      '</div>';
+  };
+
+  window.usuariosRolCrear=async function(){
+    var nom=(document.getElementById('usu-n-nombre')||{value:''}).value.trim();
+    var pas=(document.getElementById('usu-n-pass')||{value:''}).value.trim();
+    if(!nom||!pas){ if(window.showToast) showToast('Nombre y contraseña son obligatorios','warn'); return; }
+    var btn=document.getElementById('usu-n-btn'); if(btn){ btn.disabled=true; btn.textContent='Creando…'; }
+    var id=''; for(var k=0;k<8;k++) id+='0123456789abcdef'[Math.floor(Math.random()*16)];
+    var row={
+      'Idusuario':id, 'Nombre':nom, 'Contraseña':pas,
+      'Correo':(document.getElementById('usu-n-correo')||{value:''}).value.trim(),
+      'RolUsuario':(document.getElementById('usu-n-rol')||{}).value||'Usuario',
+      'Estatus':'TRUE',
+      'Empresa':(document.getElementById('usu-n-emp')||{value:''}).value.trim(),
+      'SEDE':(document.getElementById('usu-n-sede')||{}).value||'AMBAS',
+      'PuedeAprobar':(document.getElementById('usu-n-pa')||{}).value||'NO'
+    };
+    try{
+      var r=await fetch(BASE+'/Usuario/Action',{method:'POST',headers:{'ApplicationAccessKey':API_KEY,'Content-Type':'application/json'},body:JSON.stringify({Action:'Add',Rows:[row]})});
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      _invalidarMem('Usuario');
+      if(window.showToast) showToast('✅ Usuario "'+nom+'" creado','ok');
+      usuariosRolNuevoToggle();
+      usuariosRolCargar(true);
+    }catch(e){
+      if(window.showToast) showToast('❌ No se pudo crear: '+e.message,'err');
+    }
+    if(btn){ btn.disabled=false; btn.textContent='Crear usuario'; }
+  };
+})();
+</script>
+<script>
+/* ═══════════ HISTORIAL DE CONSUMOS (vales por motivo/almacén/sede/fecha, a nivel de ítem) ═══════════ */
+(function(){
+  var _chData=[];   // filas a nivel ítem (join cabecera+detalle)
+
+  function _e(s){ return (typeof escH==='function')?escH(String(s==null?'':s)):String(s==null?'':s); }
+  function _sedeTxt(v){ var s=String(v==null?'':v).toUpperCase().trim(); if(s==='99'||s.indexOf('PACK')>=0) return 'PACKING'; if(s==='30'||s.indexOf('CAMPO')>=0||s.indexOf('AGRI')>=0) return 'CAMPO'; return s||'—'; }
+
+  function ensureScreen(){
+    if(document.getElementById('screen-consumos-hist')) return;
+    var any=document.querySelector('.screen'); if(!any) return;
+    var sc=document.createElement('div');
+    sc.className='screen'; sc.id='screen-consumos-hist';
+    sc.innerHTML=
+      '<div style="max-width:1450px;margin:0 auto;padding:6px 2px">'+
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px">'+
+          '<div><h2 style="margin:0;font-size:21px;font-weight:800;color:var(--txt)">📜 Historial de Consumos</h2>'+
+            '<div style="font-size:12px;color:var(--txt3);margin-top:2px" id="ch-sub">Consumos por motivo, almacén, sede y fecha</div></div>'+
+          '<div style="display:flex;gap:8px">'+
+            '<button onclick="consumosExportExcel()" style="padding:9px 16px;border:none;border-radius:8px;background:#1d6f42;color:#fff;font-weight:700;cursor:pointer;font-size:13px"><i class="ti ti-file-spreadsheet"></i> Excel</button>'+
+            '<button onclick="consumosCargar(true)" style="padding:9px 12px;border:1px solid var(--border2);border-radius:8px;background:var(--bg);color:var(--txt2);cursor:pointer;font-size:13px"><i class="ti ti-refresh"></i> Actualizar</button>'+
+          '</div>'+
+        '</div>'+
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:flex-end">'+
+          '<div><label style="font-size:10px;color:var(--txt3);display:block;margin-bottom:3px;text-transform:uppercase">Motivo</label><select id="ch-f-motivo" onchange="consumosFiltrar()" style="padding:8px 10px;border:1px solid var(--border2);border-radius:8px;background:var(--bg);color:var(--txt);font-size:12px;min-width:210px"><option value="">Todos los motivos</option></select></div>'+
+          '<div id="ch-f-sede-wrap"><label style="font-size:10px;color:var(--txt3);display:block;margin-bottom:3px;text-transform:uppercase">Sede</label><select id="ch-f-sede" onchange="consumosFiltrar()" style="padding:8px 10px;border:1px solid var(--border2);border-radius:8px;background:var(--bg);color:var(--txt);font-size:12px"><option value="">Todas</option><option value="PACKING">PACKING</option><option value="CAMPO">CAMPO</option></select></div>'+
+          '<div><label style="font-size:10px;color:var(--txt3);display:block;margin-bottom:3px;text-transform:uppercase">Empresa</label><select id="ch-f-emp" onchange="consumosFiltrar()" style="padding:8px 10px;border:1px solid var(--border2);border-radius:8px;background:var(--bg);color:var(--txt);font-size:12px;min-width:150px"><option value="">Todas</option></select></div>'+
+          '<div><label style="font-size:10px;color:var(--txt3);display:block;margin-bottom:3px;text-transform:uppercase">Almacén</label><select id="ch-f-alm" onchange="consumosFiltrar()" style="padding:8px 10px;border:1px solid var(--border2);border-radius:8px;background:var(--bg);color:var(--txt);font-size:12px;min-width:190px"><option value="">Todos</option></select></div>'+
+          '<div><label style="font-size:10px;color:var(--txt3);display:block;margin-bottom:3px;text-transform:uppercase">Estado</label><select id="ch-f-est" onchange="consumosFiltrar()" style="padding:8px 10px;border:1px solid var(--border2);border-radius:8px;background:var(--bg);color:var(--txt);font-size:12px"><option value="">Todos</option><option value="APROBADO" selected>Aprobados</option><option value="PENDIENTE">Pendientes</option><option value="RECHAZADO">Rechazados</option></select></div>'+
+          '<div><label style="font-size:10px;color:var(--txt3);display:block;margin-bottom:3px;text-transform:uppercase">Fecha</label><input id="ch-f-fecha" list="ch-f-fecha-list" oninput="consumosFiltrar()" placeholder="dd/mm/aaaa (o parte)" autocomplete="off" style="padding:8px 10px;border:1px solid var(--border2);border-radius:8px;background:var(--bg);color:var(--txt);font-size:12px;min-width:150px"><datalist id="ch-f-fecha-list"></datalist></div>'+
+          '<div style="flex:1;min-width:180px"><label style="font-size:10px;color:var(--txt3);display:block;margin-bottom:3px;text-transform:uppercase">Buscar</label><input id="ch-f-q" oninput="consumosFiltrar()" placeholder="N° vale, producto, código, solicitante…" style="width:100%;padding:8px 10px;border:1px solid var(--border2);border-radius:8px;background:var(--bg);color:var(--txt);font-size:12px;box-sizing:border-box"></div>'+
+        '</div>'+
+        '<div id="ch-resumen" style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px"></div>'+
+        '<div style="overflow:auto;border:1px solid var(--border);border-radius:12px;max-height:62vh">'+
+          '<table style="width:100%;border-collapse:collapse;font-size:12px;min-width:1100px">'+
+            '<thead><tr style="background:#0d2440;position:sticky;top:0;z-index:2">'+
+              ['N° Vale','Fecha','Sede','Empresa','Almacén','Área','Motivo','Código','Producto','Cant.','UMD','Estado','Solicitante'].map(function(h){ return '<th style="padding:9px 10px;text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;color:#9fb6d4;white-space:nowrap">'+h+'</th>'; }).join('')+
+            '</tr></thead><tbody id="ch-tbody"></tbody>'+
+          '</table>'+
+        '</div>'+
+      '</div>';
+    any.parentNode.appendChild(sc);
+  }
+
+  window.consumosAbrir=function(){
+    ensureScreen();
+    if(typeof showScreen==='function') showScreen('consumos-hist');
+    consumosCargar(false);
+  };
+
+  window.consumosCargar=async function(force){
+    ensureScreen();
+    var tb=document.getElementById('ch-tbody'); if(!tb) return;
+    tb.innerHTML='<tr><td colspan="13" style="padding:30px;text-align:center;color:var(--txt3)">Cargando consumos…</td></tr>';
+    try{
+      var res=await Promise.all([
+        force ? _fetchFromNetwork('Vale_Consumo', true) : apiGet('Vale_Consumo'),
+        force ? _fetchFromNetwork('Detalle_Vale', true) : apiGet('Detalle_Vale')
+      ]);
+      var cabs=Array.isArray(res[0])?res[0]:[], dets=Array.isArray(res[1])?res[1]:[];
+      if(force){ try{ masterCache.saveTable('Vale_Consumo',cabs); masterCache.saveTable('Detalle_Vale',dets); }catch(e){} }
+      var cabMap={};
+      cabs.forEach(function(c){ if(window._filaSedeOk && !_filaSedeOk(c.SEDE)) return; cabMap[String(c.NUMERO||'')]=c; });
+      _chData=[];
+      dets.forEach(function(d){
+        var c=cabMap[String(d.NUMERO||'')]; if(!c) return;
+        _chData.push({
+          num:String(c.NUMERO||''), fecha:String(c['FECHA-SOLICITUD']||''), sede:_sedeTxt(c.SEDE),
+          emp:String(c.EMPRESA||''), alm:String(c.ALMACEN||''), area:String(c.AREA||''),
+          motivo:String(c.MOTIVO||''), motivoDesc:String(c.MOTIVO_DESC||''),
+          cod:String(d.CODIGO||''), prod:String(d.DESCRIPCION||''), cant:Number(d.CANTIDAD)||0, umd:String(d.UMD||''),
+          est:String(c.ESTADO||'PENDIENTE').toUpperCase(), usr:String(c['USUARIO-SOLICITUD']||'')
+        });
+      });
+      // ordenar: más reciente primero (por número, que lleva timestamp)
+      _chData.sort(function(a,b){ return b.num.localeCompare(a.num); });
+      // poblar filtros
+      function fill(id, vals){ var el=document.getElementById(id); if(!el) return; var prev=el.value; var first=el.options[0].outerHTML; el.innerHTML=first+vals.map(function(v){ return '<option value="'+_e(v)+'">'+_e(v)+'</option>'; }).join(''); el.value=prev; }
+      var motivos={}; _chData.forEach(function(r){ if(r.motivo) motivos[r.motivo+' — '+(r.motivoDesc||'')]=r.motivo; });
+      var selM=document.getElementById('ch-f-motivo');
+      if(selM){ var pm=selM.value; selM.innerHTML='<option value="">Todos los motivos</option>'+Object.keys(motivos).sort().map(function(k){ return '<option value="'+_e(motivos[k])+'">'+_e(k)+'</option>'; }).join(''); selM.value=pm; }
+      fill('ch-f-emp', Array.from(new Set(_chData.map(function(r){return r.emp;}).filter(Boolean))).sort());
+      fill('ch-f-alm', Array.from(new Set(_chData.map(function(r){return r.alm;}).filter(Boolean))).sort());
+      var dl=document.getElementById('ch-f-fecha-list');
+      if(dl) dl.innerHTML=Array.from(new Set(_chData.map(function(r){return r.fecha;}).filter(Boolean))).sort().reverse().map(function(f){ return '<option value="'+_e(f)+'"></option>'; }).join('');
+      // si la sede del usuario es fija, ocultar el filtro de sede
+      var sw=document.getElementById('ch-f-sede-wrap');
+      if(sw) sw.style.display=(window._sedeIdUsuario && _sedeIdUsuario())?'none':'';
+      consumosFiltrar();
+    }catch(e){
+      tb.innerHTML='<tr><td colspan="13" style="padding:30px;text-align:center;color:#dc2626">Error: '+_e(e.message)+'</td></tr>';
+    }
+  };
+
+  var _chFiltradas=[];
+  window.consumosFiltrar=function(){
+    var tb=document.getElementById('ch-tbody'); if(!tb) return;
+    var fM=(document.getElementById('ch-f-motivo')||{}).value||'';
+    var fS=(document.getElementById('ch-f-sede')||{}).value||'';
+    var fE=(document.getElementById('ch-f-emp')||{}).value||'';
+    var fA=(document.getElementById('ch-f-alm')||{}).value||'';
+    var fEst=(document.getElementById('ch-f-est')||{}).value||'';
+    var fF=((document.getElementById('ch-f-fecha')||{}).value||'').trim().toLowerCase();
+    var q=((document.getElementById('ch-f-q')||{}).value||'').trim().toLowerCase();
+    _chFiltradas=_chData.filter(function(r){
+      if(fM && r.motivo!==fM) return false;
+      if(fS && r.sede!==fS) return false;
+      if(fE && r.emp!==fE) return false;
+      if(fA && r.alm!==fA) return false;
+      if(fEst && r.est!==fEst) return false;
+      if(fF && r.fecha.toLowerCase().indexOf(fF)<0) return false;
+      if(q && (r.num+' '+r.cod+' '+r.prod+' '+r.usr).toLowerCase().indexOf(q)<0) return false;
+      return true;
+    });
+    // resumen por motivo
+    var res={}; var totCant=0;
+    _chFiltradas.forEach(function(r){ res[r.motivo]=(res[r.motivo]||0)+r.cant; totCant+=r.cant; });
+    var rz=document.getElementById('ch-resumen');
+    if(rz){
+      var chips=Object.keys(res).sort().map(function(m){
+        return '<div style="background:var(--card,#fff);border:1px solid var(--border);border-radius:10px;padding:8px 14px"><div style="font-size:9px;font-weight:800;text-transform:uppercase;color:var(--txt3)">'+_e(m||'—')+'</div><div style="font-size:16px;font-weight:800;color:var(--txt)">'+res[m].toLocaleString('es-PE')+'</div></div>';
+      }).join('');
+      rz.innerHTML='<div style="background:#0d2440;border-radius:10px;padding:8px 14px"><div style="font-size:9px;font-weight:800;text-transform:uppercase;color:#9fb6d4">Ítems · Cantidad total</div><div style="font-size:16px;font-weight:800;color:#fff">'+_chFiltradas.length+' · '+totCant.toLocaleString('es-PE')+'</div></div>'+chips;
+    }
+    var sub=document.getElementById('ch-sub'); if(sub) sub.textContent=_chFiltradas.length+' consumo(s)';
+    if(!_chFiltradas.length){ tb.innerHTML='<tr><td colspan="13" style="padding:30px;text-align:center;color:var(--txt3)">Sin consumos con esos filtros</td></tr>'; return; }
+    var estCol={APROBADO:'#059669',PENDIENTE:'#d97706',RECHAZADO:'#dc2626'};
+    tb.innerHTML=_chFiltradas.slice(0,800).map(function(r){
+      return '<tr style="border-top:1px solid var(--border)">'+
+        '<td style="padding:7px 10px;font-family:monospace;font-size:11px;color:#0d6efd;white-space:nowrap">'+_e(r.num)+'</td>'+
+        '<td style="padding:7px 10px;white-space:nowrap">'+_e(r.fecha)+'</td>'+
+        '<td style="padding:7px 10px"><span style="font-size:9px;font-weight:800;background:var(--bg);border:1px solid var(--border2);border-radius:5px;padding:2px 7px">'+_e(r.sede)+'</span></td>'+
+        '<td style="padding:7px 10px">'+_e(r.emp)+'</td>'+
+        '<td style="padding:7px 10px">'+_e(r.alm)+'</td>'+
+        '<td style="padding:7px 10px">'+_e(r.area)+'</td>'+
+        '<td style="padding:7px 10px;white-space:nowrap"><span style="font-family:monospace;background:#eef2ff;color:#4f46e5;padding:1px 7px;border-radius:5px;font-weight:700;font-size:11px" title="'+_e(r.motivoDesc)+'">'+_e(r.motivo||'—')+'</span></td>'+
+        '<td style="padding:7px 10px;font-family:monospace;font-size:11px">'+_e(r.cod)+'</td>'+
+        '<td style="padding:7px 10px">'+_e(r.prod)+'</td>'+
+        '<td style="padding:7px 10px;text-align:right;font-weight:800">'+r.cant.toLocaleString('es-PE')+'</td>'+
+        '<td style="padding:7px 10px">'+_e(r.umd)+'</td>'+
+        '<td style="padding:7px 10px"><span style="font-size:9px;font-weight:800;color:#fff;background:'+(estCol[r.est]||'#64748b')+';border-radius:5px;padding:2px 7px">'+_e(r.est)+'</span></td>'+
+        '<td style="padding:7px 10px">'+_e(r.usr)+'</td>'+
+      '</tr>';
+    }).join('') + (_chFiltradas.length>800?'<tr><td colspan="13" style="padding:10px;text-align:center;color:var(--txt3);font-size:11px">Mostrando 800 de '+_chFiltradas.length+' — usa los filtros o exporta a Excel para ver todo</td></tr>':'');
+  };
+
+  window.consumosExportExcel=function(){
+    if(!_chFiltradas.length){ if(window.showToast) showToast('Nada que exportar','warn'); return; }
+    var aoa=[['N° Vale','Fecha','Sede','Empresa','Almacén','Área','Motivo','Motivo Descripción','Código','Producto','Cantidad','UMD','Estado','Solicitante']];
+    _chFiltradas.forEach(function(r){ aoa.push([r.num,r.fecha,r.sede,r.emp,r.alm,r.area,r.motivo,r.motivoDesc,r.cod,r.prod,r.cant,r.umd,r.est,r.usr]); });
+    descargarExcel('Historial_Consumos', aoa);
+  };
+})();
 </script>
 </body>
 </html>
